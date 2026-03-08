@@ -65,21 +65,22 @@ def _run_backtest_sync(backtest_id: str, request: BacktestRequest):
             for ts, v in result.portfolio.equity_curve
         ]
 
-        # SPY 벤치마크 (yfinance 직접 fetch — Alpaca MultiIndex 의존 제거)
+        # SPY 벤치마크 — string 날짜 비교 방식 (tz/slicing 이슈 완전 우회)
         try:
-            import yfinance as yf
-            spy_ticker = yf.download("SPY", start=request.start_date, end=request.end_date, progress=False, auto_adjust=True)
-            if not spy_ticker.empty:
-                spy_close_col = spy_ticker["Close"]
-                spy_equity_curve = [
-                    {"date": ts.strftime("%Y-%m-%d"), "value": round(float(v), 4)}
-                    for ts, v in spy_close_col.items()
-                ]
-            else:
-                spy_equity_curve = []
+            spy_raw = spy_df["close"].sort_index()
+            print(f"[SPY DEBUG] spy_raw len={len(spy_raw)}, tz={spy_raw.index.tz}, start={request.start_date}, end={request.end_date}")
+            if len(spy_raw) > 0:
+                print(f"[SPY DEBUG] first ts={spy_raw.index[0]!r}, type={type(spy_raw.index[0])}")
+            spy_equity_curve = [
+                {"date": ts.strftime("%Y-%m-%d"), "value": round(float(v), 4)}
+                for ts, v in spy_raw.items()
+                if request.start_date <= ts.strftime("%Y-%m-%d") <= request.end_date
+            ]
+            print(f"[SPY DEBUG] spy_equity_curve len={len(spy_equity_curve)}")
         except Exception as e:
             import logging
             logging.getLogger(__name__).warning(f"SPY equity curve failed: {e}")
+            print(f"[SPY DEBUG] EXCEPTION: {e}")
             spy_equity_curve = []
 
         trades = [
