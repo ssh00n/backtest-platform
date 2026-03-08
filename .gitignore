@@ -19,8 +19,8 @@ web/.next/
 web/node_modules/
 web/out/
 
-# Data cache
-data/
+# Data cache (data/ dir at root only, not src/data/)
+/data/
 *.parquet
 *.csv
 *.pkl
