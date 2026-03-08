@@ -31,6 +31,7 @@ const TEMPLATES = [
     difficultyColor: '#26a69a',
     icon: Zap,
     description: 'Buy stocks with strong recent price momentum. Simple and effective in trending markets.',
+    engineNote: 'Short-term breakout (20d)',
     tags: ['Momentum', 'Easy'],
     defaultParams: {
       darvas_box_period: 20,
@@ -51,6 +52,7 @@ const TEMPLATES = [
     difficultyColor: '#ef5350',
     icon: Activity,
     description: 'Trade pullbacks to mean. Enter when price is oversold relative to recent average.',
+    engineNote: 'Long-term breakout (30d)',
     tags: ['Contrarian', 'Range'],
     defaultParams: {
       darvas_box_period: 30,
@@ -109,7 +111,9 @@ export default function TemplatesTab({ selectedTemplate, onSelect }: Props) {
                     <span>Sharpe: <span className="text-[#9ca3af]">{t.sharpHint}</span></span>
                   </div>
                   {t.id !== 'darvas_box' && (
-                    <p className="mt-1.5 text-[10px] text-[#4b5563]">⚙ Powered by Darvas Box Engine</p>
+                    <p className="mt-1.5 text-[10px] text-[#4b5563]">
+                      ⚙ Powered by Darvas Box Engine{'engineNote' in t && ` · ${(t as {engineNote: string}).engineNote}`}
+                    </p>
                   )}
                 </div>
               </div>
