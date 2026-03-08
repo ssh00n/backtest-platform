@@ -61,3 +61,28 @@ async def backtest_ws(websocket: WebSocket, backtest_id: str):
         pass
     finally:
         await websocket.close()
+
+
+@router.get("/debug/spy")
+async def debug_spy():
+    """SPY 데이터 직접 진단 - Alpaca MultiIndex 구조 확인"""
+    from datetime import date, timedelta
+    from src.data.fetcher import fetch_daily_bars
+    from src.data.universe_extended import get_sp500_symbols
+    try:
+        symbols = ["SPY", "AAPL"]
+        end_date = date.today()
+        start_date = end_date - timedelta(days=10)
+        bars = fetch_daily_bars(symbols, start_date, end_date)
+        spy_df = bars.xs("SPY", level="symbol").sort_index()
+        spy_raw = spy_df["close"].sort_index()
+        return {
+            "spy_raw_len": len(spy_raw),
+            "index_tz": str(spy_raw.index.tz) if len(spy_raw) > 0 else None,
+            "first_ts": repr(spy_raw.index[0]) if len(spy_raw) > 0 else None,
+            "first_ts_str": spy_raw.index[0].strftime("%Y-%m-%d") if len(spy_raw) > 0 else None,
+            "columns": list(spy_df.columns),
+            "sample": [{"date": ts.strftime("%Y-%m-%d"), "v": float(v)} for ts, v in list(spy_raw.items())[:3]],
+        }
+    except Exception as e:
+        return {"error": str(e), "type": type(e).__name__}
