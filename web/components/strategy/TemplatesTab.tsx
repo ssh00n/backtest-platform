@@ -108,6 +108,9 @@ export default function TemplatesTab({ selectedTemplate, onSelect }: Props) {
                     <span>Win Rate: <span className="text-[#9ca3af]">{t.winRateHint}</span></span>
                     <span>Sharpe: <span className="text-[#9ca3af]">{t.sharpHint}</span></span>
                   </div>
+                  {t.id !== 'darvas_box' && (
+                    <p className="mt-1.5 text-[10px] text-[#4b5563]">⚙ Powered by Darvas Box Engine</p>
+                  )}
                 </div>
               </div>
             </button>
