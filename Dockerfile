@@ -2,7 +2,12 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Install dependencies
+# System dependencies for lxml
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libxml2 libxslt1.1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
 RUN pip install --no-cache-dir \
     "fastapi>=0.100.0" \
     "uvicorn[standard]>=0.23.0" \
@@ -14,12 +19,15 @@ RUN pip install --no-cache-dir \
     pyarrow \
     numpy \
     requests \
-    lxml
+    lxml \
+    html5lib
 
-# Copy app
+# Copy app source
 COPY api/ ./api/
 COPY src/ ./src/
-COPY data/cache/sp500_constituents.parquet ./data/cache/sp500_constituents.parquet
+
+# Create data/cache directory (SP500 캐시 런타임 자동 생성)
+RUN mkdir -p ./data/cache
 
 EXPOSE 8000
 

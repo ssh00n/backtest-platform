@@ -1,6 +1,6 @@
 """
 S&P 500 Universe 관리
-- Playwright로 Wikipedia 스크래핑
+- requests + pandas read_html로 Wikipedia 스크래핑 (Playwright 불필요)
 - Parquet 캐싱
 """
 
@@ -8,12 +8,11 @@ from io import StringIO
 from pathlib import Path
 
 import pandas as pd
+import requests
 
 from src.utils.logger import get_logger
 
 log = get_logger(__name__)
-
-from src.utils.browser import BrowserClient
 
 CACHE_DIR = Path(__file__).parent.parent.parent / "data" / "cache"
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
@@ -32,10 +31,11 @@ def fetch_sp500_constituents(use_cache: bool = True) -> pd.DataFrame:
     if use_cache and SP500_CACHE.exists():
         return pd.read_parquet(SP500_CACHE)
 
-    with BrowserClient() as browser:
-        html = browser.get_page_html(SP500_WIKI_URL)
-
-    tables = pd.read_html(StringIO(html), header=0)
+    log.info("Fetching S&P 500 constituents from Wikipedia...")
+    headers = {"User-Agent": "Mozilla/5.0 (compatible; research bot)"}
+    resp = requests.get(SP500_WIKI_URL, headers=headers, timeout=30)
+    resp.raise_for_status()
+    tables = pd.read_html(StringIO(resp.text), header=0)
     df = tables[0]
 
     df = df.rename(
