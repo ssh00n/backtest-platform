@@ -73,10 +73,23 @@ def _run_backtest_sync(backtest_id: str, request: BacktestRequest):
             for t in result.portfolio.closed_trades
         ]
 
+        def sanitize(obj):
+            """inf/nan → null 변환 (JSON 직렬화 안전)"""
+            import math
+            if isinstance(obj, float):
+                if math.isinf(obj) or math.isnan(obj):
+                    return None
+                return obj
+            if isinstance(obj, dict):
+                return {k: sanitize(v) for k, v in obj.items()}
+            if isinstance(obj, list):
+                return [sanitize(v) for v in obj]
+            return obj
+
         result_data = {
             "backtest_id": backtest_id,
             "status": "completed",
-            "metrics": metrics,
+            "metrics": sanitize(metrics),
             "equity_curve": equity_curve,
             "trades": trades,
         }
