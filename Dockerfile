@@ -22,7 +22,9 @@ RUN pip install --no-cache-dir \
     lxml \
     html5lib \
     "sqlalchemy>=2.0" \
-    "psycopg[binary]>=3.1"
+    "psycopg[binary]>=3.1" \
+    pytz \
+    yfinance
 
 # Copy app source
 COPY api/ ./api/
