@@ -7,9 +7,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxml2 libxslt1.1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Install from pyproject.toml (단일 소스, 싱크 문제 없음)
-COPY pyproject.toml .
-RUN pip install --no-cache-dir ".[api]" 2>/dev/null || pip install --no-cache-dir .
+# Install Python dependencies from requirements.txt (확실한 방법)
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy app source
 COPY api/ ./api/
