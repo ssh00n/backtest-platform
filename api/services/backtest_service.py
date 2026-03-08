@@ -67,21 +67,17 @@ def _run_backtest_sync(backtest_id: str, request: BacktestRequest):
 
         # SPY 누적 수익률 (equity_curve와 동일 날짜 범위)
         try:
-            import pandas as pd
             spy_raw = spy_df["close"].sort_index()
-            # tz-aware index를 tz-naive로 변환 후 날짜 슬라이싱
-            if spy_raw.index.tz is not None:
-                spy_raw.index = spy_raw.index.tz_convert("UTC").tz_localize(None)
-            start_dt = pd.Timestamp(request.start_date)
-            end_dt = pd.Timestamp(request.end_date)
-            spy_close = spy_raw.loc[start_dt:end_dt]
+            print(f"[SPY DEBUG] len={len(spy_raw)}, tz={spy_raw.index.tz if len(spy_raw)>0 else 'N/A'}, start={request.start_date}, end={request.end_date}", flush=True)
+            # 날짜 문자열 비교 방식으로 슬라이싱 (tz 문제 우회)
             spy_equity_curve = [
                 {"date": ts.strftime("%Y-%m-%d"), "value": round(float(v), 4)}
-                for ts, v in spy_close.items()
+                for ts, v in spy_raw.items()
+                if request.start_date <= ts.strftime("%Y-%m-%d") <= request.end_date
             ]
+            print(f"[SPY DEBUG] result_len={len(spy_equity_curve)}", flush=True)
         except Exception as e:
-            import logging
-            logging.getLogger(__name__).warning(f"SPY equity curve failed: {e}")
+            print(f"[SPY ERROR] {type(e).__name__}: {e}", flush=True)
             spy_equity_curve = []
 
         trades = [
