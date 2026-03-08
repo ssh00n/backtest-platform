@@ -32,3 +32,6 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+# SP500 캐시는 포함 (Playwright 없이 배포 가능하도록)
+!/data/cache/sp500_constituents.parquet

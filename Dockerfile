@@ -3,11 +3,10 @@ FROM python:3.12-slim
 WORKDIR /app
 
 # Install dependencies
-COPY pyproject.toml .
 RUN pip install --no-cache-dir \
-    fastapi>=0.100.0 \
+    "fastapi>=0.100.0" \
     "uvicorn[standard]>=0.23.0" \
-    websockets>=11.0 \
+    "websockets>=11.0" \
     python-dotenv \
     pydantic \
     alpaca-py \
@@ -20,7 +19,7 @@ RUN pip install --no-cache-dir \
 # Copy app
 COPY api/ ./api/
 COPY src/ ./src/
-COPY data/ ./data/
+COPY data/cache/sp500_constituents.parquet ./data/cache/sp500_constituents.parquet
 
 EXPOSE 8000
 
