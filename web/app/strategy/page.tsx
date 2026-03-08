@@ -2,7 +2,10 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { BarChart2, ChevronDown, ChevronUp, History } from 'lucide-react'
+import { BarChart2, History, Layers, Settings2, BarChart } from 'lucide-react'
+import TemplatesTab from '@/components/strategy/TemplatesTab'
+import RuleBuilderTab from '@/components/strategy/RuleBuilderTab'
+import IndicatorsTab from '@/components/strategy/IndicatorsTab'
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000/api'
 
@@ -24,6 +27,12 @@ const defaultConfig = {
   strategy_name: 'darvas_box',
 }
 
+const TABS = [
+  { id: 'templates', label: 'Templates', icon: Layers, hint: 'Beginner' },
+  { id: 'rules', label: 'Rule Builder', icon: Settings2, hint: 'Intermediate' },
+  { id: 'indicators', label: 'Indicators', icon: BarChart, hint: 'Advanced' },
+]
+
 function SliderField({
   label, value, min, max, step, format, onChange
 }: {
@@ -43,23 +52,25 @@ function SliderField({
         onChange={e => onChange(Number(e.target.value))}
         className="w-full accent-[#26a69a]"
       />
-      <div className="flex justify-between text-[10px] text-[#4b5563] mt-0.5">
-        <span>{format ? format(min) : min}</span>
-        <span>{format ? format(max) : max}</span>
-      </div>
     </div>
   )
 }
 
 export default function StrategyPage() {
   const router = useRouter()
-  const [config, setConfig] = useState(defaultConfig)
+  const [activeTab, setActiveTab] = useState('templates')
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>('darvas_box')
+  const [config, setConfig] = useState<Record<string, unknown>>(defaultConfig)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [showAdvanced, setShowAdvanced] = useState(false)
 
-  const update = (k: string, v: string | number | boolean) =>
+  const update = (k: string, v: unknown) =>
     setConfig(prev => ({ ...prev, [k]: v }))
+
+  const handleTemplateSelect = (templateId: string, params: Record<string, unknown>) => {
+    setSelectedTemplate(templateId)
+    setConfig(prev => ({ ...prev, ...params, strategy_name: templateId }))
+  }
 
   const handleRun = async () => {
     setLoading(true)
@@ -96,23 +107,54 @@ export default function StrategyPage() {
       </nav>
 
       <div className="max-w-2xl mx-auto px-6 py-8">
-        <h1 className="text-xl font-bold mb-2">Strategy Setup</h1>
-        <p className="text-sm text-[#9ca3af] mb-6">Configure your backtest parameters and run the simulation</p>
+        <h1 className="text-xl font-bold mb-1">Strategy Builder</h1>
+        <p className="text-sm text-[#9ca3af] mb-6">Build your trading strategy from templates, rules, or indicators</p>
 
-        <div className="bg-[#111827] border border-[#1f2937] rounded-xl p-6 space-y-5">
-          {/* Strategy */}
-          <div>
-            <label className="text-[#9ca3af] text-sm block mb-1.5">Strategy</label>
-            <select className="w-full bg-[#1f2937] border border-[#374151] rounded-lg px-3 py-2.5 text-[#f3f4f6] focus:outline-none focus:ring-1 focus:ring-[#26a69a]">
-              <option value="darvas_box">Darvas Box</option>
-            </select>
-          </div>
+        {/* 3-Tab Navigation */}
+        <div className="flex gap-1 bg-[#111827] border border-[#1f2937] rounded-xl p-1 mb-5">
+          {TABS.map(tab => {
+            const Icon = tab.icon
+            const isActive = activeTab === tab.id
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex-1 flex flex-col items-center gap-0.5 py-2.5 px-3 rounded-lg text-xs font-medium transition-all ${
+                  isActive
+                    ? 'bg-[#26a69a] text-white shadow-sm'
+                    : 'text-[#9ca3af] hover:text-[#f3f4f6]'
+                }`}
+              >
+                <Icon size={16} />
+                <span>{tab.label}</span>
+                <span className={`text-[10px] ${isActive ? 'text-white/70' : 'text-[#6b7280]'}`}>{tab.hint}</span>
+              </button>
+            )
+          })}
+        </div>
+
+        {/* Tab Content */}
+        <div className="bg-[#111827] border border-[#1f2937] rounded-xl p-5 mb-5">
+          {activeTab === 'templates' && (
+            <TemplatesTab selectedTemplate={selectedTemplate} onSelect={handleTemplateSelect} />
+          )}
+          {activeTab === 'rules' && (
+            <RuleBuilderTab params={config} onChange={update} />
+          )}
+          {activeTab === 'indicators' && (
+            <IndicatorsTab params={config} onChange={update} />
+          )}
+        </div>
+
+        {/* Common Params */}
+        <div className="bg-[#111827] border border-[#1f2937] rounded-xl p-5 space-y-5 mb-5">
+          <h3 className="text-sm font-semibold text-[#9ca3af] uppercase tracking-wider">Backtest Parameters</h3>
 
           {/* Universe */}
           <div>
             <label className="text-[#9ca3af] text-sm block mb-1.5">Universe</label>
             <select
-              value={config.universe}
+              value={config.universe as string}
               onChange={e => update('universe', e.target.value)}
               className="w-full bg-[#1f2937] border border-[#374151] rounded-lg px-3 py-2.5 text-[#f3f4f6] focus:outline-none focus:ring-1 focus:ring-[#26a69a]"
             >
@@ -128,7 +170,7 @@ export default function StrategyPage() {
                 <label className="text-[#9ca3af] text-sm block mb-1.5">{label}</label>
                 <input
                   type="date"
-                  value={(config as Record<string, string | number | boolean>)[key] as string}
+                  value={config[key] as string}
                   onChange={e => update(key, e.target.value)}
                   className="w-full bg-[#1f2937] border border-[#374151] rounded-lg px-3 py-2.5 text-[#f3f4f6] focus:outline-none focus:ring-1 focus:ring-[#26a69a]"
                 />
@@ -143,7 +185,7 @@ export default function StrategyPage() {
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9ca3af]">$</span>
               <input
                 type="number"
-                value={config.initial_capital}
+                value={config.initial_capital as number}
                 min={10000} max={10000000} step={10000}
                 onChange={e => update('initial_capital', Number(e.target.value))}
                 className="w-full bg-[#1f2937] border border-[#374151] rounded-lg pl-7 pr-3 py-2.5 text-[#f3f4f6] font-mono focus:outline-none focus:ring-1 focus:ring-[#26a69a]"
@@ -151,103 +193,39 @@ export default function StrategyPage() {
             </div>
           </div>
 
-          {/* Portfolio Params */}
           <SliderField
             label="Position Size per Trade"
-            value={config.position_size_pct}
+            value={config.position_size_pct as number}
             min={0.05} max={0.5} step={0.05}
             format={v => `${(v * 100).toFixed(0)}%`}
             onChange={v => update('position_size_pct', v)}
           />
           <SliderField
             label="Max Positions"
-            value={config.max_positions}
+            value={config.max_positions as number}
             min={1} max={20} step={1}
             onChange={v => update('max_positions', v)}
           />
-
-          {/* Event Filter */}
-          <div>
-            <label className="text-[#9ca3af] text-sm block mb-1.5">Event Filter</label>
-            <select
-              value={config.event_filter_mode}
-              onChange={e => update('event_filter_mode', e.target.value)}
-              className="w-full bg-[#1f2937] border border-[#374151] rounded-lg px-3 py-2.5 text-[#f3f4f6] focus:outline-none focus:ring-1 focus:ring-[#26a69a]"
-            >
-              <option value="none">None</option>
-              <option value="earnings_block">Earnings Block</option>
-              <option value="miss_block">Miss Block</option>
-              <option value="no_event_only">No Event Only</option>
-            </select>
-          </div>
-
-          {/* Advanced: Darvas Box params */}
-          <div className="border-t border-[#1f2937] pt-4">
-            <button
-              onClick={() => setShowAdvanced(v => !v)}
-              className="flex items-center gap-2 text-sm text-[#9ca3af] hover:text-[#f3f4f6] transition-colors w-full"
-            >
-              {showAdvanced ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-              Advanced: Darvas Box Parameters
-            </button>
-
-            {showAdvanced && (
-              <div className="mt-4 space-y-5 border border-[#1f2937] rounded-lg p-4 bg-[#0f1117]">
-                <p className="text-xs text-[#6b7280]">Fine-tune the Darvas Box strategy parameters</p>
-
-                <SliderField
-                  label="Box Formation Period (candles)"
-                  value={config.darvas_box_period}
-                  min={20} max={120} step={5}
-                  onChange={v => update('darvas_box_period', v)}
-                />
-                <SliderField
-                  label="Breakout Buffer"
-                  value={config.darvas_breakout_pct}
-                  min={0.005} max={0.05} step={0.005}
-                  format={v => `${(v * 100).toFixed(1)}%`}
-                  onChange={v => update('darvas_breakout_pct', v)}
-                />
-                <SliderField
-                  label="Stop Loss"
-                  value={config.darvas_stop_loss_pct}
-                  min={0.03} max={0.15} step={0.01}
-                  format={v => `${(v * 100).toFixed(0)}%`}
-                  onChange={v => update('darvas_stop_loss_pct', v)}
-                />
-
-                <div className="flex items-center justify-between">
-                  <label className="text-[#9ca3af] text-sm">Trailing Stop</label>
-                  <button
-                    onClick={() => update('darvas_trailing_stop', !config.darvas_trailing_stop)}
-                    className={`relative inline-flex h-6 w-11 rounded-full transition-colors ${config.darvas_trailing_stop ? 'bg-[#26a69a]' : 'bg-[#374151]'}`}
-                  >
-                    <span className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform mt-0.5 ${config.darvas_trailing_stop ? 'translate-x-5' : 'translate-x-0.5'}`} />
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {error && (
-            <div className="bg-[#ef535020] border border-[#ef5350] rounded-lg px-4 py-3 text-[#ef5350] text-sm">
-              {error}
-            </div>
-          )}
-
-          <button
-            onClick={handleRun}
-            disabled={loading}
-            className="w-full py-3 bg-[#26a69a] hover:bg-[#2bbbad] disabled:bg-[#374151] disabled:cursor-not-allowed rounded-xl font-semibold text-sm transition-colors flex items-center justify-center gap-2"
-          >
-            {loading ? (
-              <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-                Starting...
-              </>
-            ) : '▶ Run Backtest'}
-          </button>
         </div>
+
+        {error && (
+          <div className="bg-[#ef535020] border border-[#ef5350] rounded-lg px-4 py-3 text-[#ef5350] text-sm mb-4">
+            {error}
+          </div>
+        )}
+
+        <button
+          onClick={handleRun}
+          disabled={loading}
+          className="w-full py-3.5 bg-[#26a69a] hover:bg-[#2bbbad] disabled:bg-[#374151] disabled:cursor-not-allowed rounded-xl font-semibold text-sm transition-colors flex items-center justify-center gap-2"
+        >
+          {loading ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+              Starting Backtest...
+            </>
+          ) : '▶ Run Backtest'}
+        </button>
       </div>
     </div>
   )
