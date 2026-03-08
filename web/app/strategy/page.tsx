@@ -119,7 +119,7 @@ export default function StrategyPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 flex flex-col items-center gap-0.5 py-2.5 px-3 rounded-lg text-xs font-medium transition-all ${
+                className={`flex-1 flex flex-col items-center gap-1 py-2.5 px-3 rounded-lg text-xs font-medium transition-all ${
                   isActive
                     ? 'bg-[#26a69a] text-white shadow-sm'
                     : 'text-[#9ca3af] hover:text-[#f3f4f6]'
