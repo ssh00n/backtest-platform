@@ -65,6 +65,16 @@ def _run_backtest_sync(backtest_id: str, request: BacktestRequest):
             for ts, v in result.portfolio.equity_curve
         ]
 
+        # SPY 누적 수익률 (equity_curve와 동일 날짜 범위)
+        try:
+            spy_close = spy_df["close"].loc[request.start_date:request.end_date]
+            spy_equity_curve = [
+                {"date": ts.strftime("%Y-%m-%d"), "value": round(float(v), 4)}
+                for ts, v in spy_close.items()
+            ]
+        except Exception:
+            spy_equity_curve = []
+
         trades = [
             {
                 "date": t.exit_date.strftime("%Y-%m-%d"),
@@ -94,6 +104,7 @@ def _run_backtest_sync(backtest_id: str, request: BacktestRequest):
             "status": "completed",
             "metrics": sanitize(metrics),
             "equity_curve": equity_curve,
+            "spy_equity_curve": spy_equity_curve,
             "trades": trades,
         }
         backtest_results[backtest_id] = result_data

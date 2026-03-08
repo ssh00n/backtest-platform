@@ -43,8 +43,14 @@ def init_db():
                         max_drawdown_pct NUMERIC,
                         equity_curve     JSONB,
                         trades           JSONB,
-                        metrics          JSONB
+                        metrics          JSONB,
+                        spy_equity_curve JSONB
                     )
+                """)
+                # 기존 DB에 spy_equity_curve 컬럼 없을 경우 마이그레이션
+                cur.execute("""
+                    ALTER TABLE backtest_runs
+                    ADD COLUMN IF NOT EXISTS spy_equity_curve JSONB
                 """)
         print("[DB] init_db OK")
     except Exception as e:
@@ -63,8 +69,8 @@ def save_result(backtest_id: str, request_params: dict, result: dict):
                     INSERT INTO backtest_runs
                         (id, start_date, end_date, initial_capital, max_positions,
                          position_size_pct, status, total_return_pct, total_trades,
-                         win_rate_pct, sharpe_ratio, max_drawdown_pct, equity_curve, trades, metrics)
-                    VALUES (%s,%s,%s,%s,%s,%s,'completed',%s,%s,%s,%s,%s,%s,%s,%s)
+                         win_rate_pct, sharpe_ratio, max_drawdown_pct, equity_curve, trades, metrics, spy_equity_curve)
+                    VALUES (%s,%s,%s,%s,%s,%s,'completed',%s,%s,%s,%s,%s,%s,%s,%s,%s)
                     ON CONFLICT (id) DO UPDATE SET
                         status = 'completed',
                         total_return_pct = EXCLUDED.total_return_pct,
@@ -74,7 +80,8 @@ def save_result(backtest_id: str, request_params: dict, result: dict):
                         max_drawdown_pct = EXCLUDED.max_drawdown_pct,
                         equity_curve = EXCLUDED.equity_curve,
                         trades = EXCLUDED.trades,
-                        metrics = EXCLUDED.metrics
+                        metrics = EXCLUDED.metrics,
+                        spy_equity_curve = EXCLUDED.spy_equity_curve
                 """, (
                     backtest_id,
                     request_params.get("start_date"),
@@ -90,6 +97,7 @@ def save_result(backtest_id: str, request_params: dict, result: dict):
                     json.dumps(result.get("equity_curve", [])),
                     json.dumps(result.get("trades", [])),
                     json.dumps(result.get("metrics", {})),
+                    json.dumps(result.get("spy_equity_curve", [])),
                 ))
         print(f"[DB] save_result OK: {backtest_id}")
     except Exception as e:
