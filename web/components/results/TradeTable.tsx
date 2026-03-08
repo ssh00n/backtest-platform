@@ -22,6 +22,9 @@ function exportCSV(trades: Trade[]) {
 }
 
 export function TradeTable({ trades }: { trades: Trade[] }) {
+  const showEventCol = trades.some(t => t.event_type && t.event_type !== '-')
+  const headers = ['Date', 'Symbol', 'PnL (R)', 'Exit Action', ...(showEventCol ? ['Event'] : [])]
+
   return (
     <div className="bg-[#111827] border border-[#1f2937] rounded-xl p-6">
       <div className="flex items-center justify-between mb-4">
@@ -38,7 +41,7 @@ export function TradeTable({ trades }: { trades: Trade[] }) {
         <table className="w-full text-sm">
           <thead>
             <tr className="text-[#9ca3af] border-b border-[#1f2937]">
-              {['Date', 'Symbol', 'PnL (R)', 'Exit Action', 'Event'].map(h => (
+              {headers.map(h => (
                 <th key={h} className="text-left pb-3 pr-4 font-medium">{h}</th>
               ))}
             </tr>
@@ -52,7 +55,7 @@ export function TradeTable({ trades }: { trades: Trade[] }) {
                   {t.pnl_r >= 0 ? '+' : ''}{t.pnl_r}R
                 </td>
                 <td className="py-2 pr-4 text-[#9ca3af]">{t.exit_action}</td>
-                <td className="py-2 text-[#9ca3af]">{t.event_type}</td>
+                {showEventCol && <td className="py-2 text-[#9ca3af]">{t.event_type}</td>}
               </tr>
             ))}
           </tbody>

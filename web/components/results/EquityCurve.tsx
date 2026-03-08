@@ -21,13 +21,17 @@ export function EquityCurve({ data }: { data: EquityPoint[] }) {
           <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
           <XAxis
             dataKey="date"
-            tick={{ fill: '#9ca3af', fontSize: 11 }}
+            tick={{ fill: '#6b7280', fontSize: 11 }}
+            tickFormatter={(d: string) => {
+              const dt = new Date(d)
+              return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}`
+            }}
+            minTickGap={60}
             interval="preserveStartEnd"
-            minTickGap={50}
-            tickFormatter={(v: string) => v.slice(0, 7)}
           />
           <YAxis
             tick={{ fill: '#9ca3af', fontSize: 11 }}
+            domain={['auto', 'auto']}
             tickFormatter={(v: number) => `$${(v / 1000).toFixed(0)}k`}
           />
           <Tooltip
