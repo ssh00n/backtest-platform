@@ -1,6 +1,6 @@
 'use client'
 
-import { Zap, TrendingDown, BarChart2, CheckCircle2 } from 'lucide-react'
+import { Zap, TrendingDown, TrendingUp, CheckCircle2, Activity } from 'lucide-react'
 
 const TEMPLATES = [
   {
@@ -9,8 +9,9 @@ const TEMPLATES = [
     category: 'Breakout',
     difficulty: 'Intermediate',
     difficultyColor: '#f59e0b',
-    icon: BarChart2,
+    icon: TrendingUp,
     description: 'Identify stocks making new highs forming box-shaped consolidation patterns, then buy on breakout.',
+    engineNote: '55d breakout · Trend-following',
     tags: ['Trend Following', 'Momentum'],
     defaultParams: {
       darvas_box_period: 55,
@@ -31,6 +32,7 @@ const TEMPLATES = [
     difficultyColor: '#26a69a',
     icon: Zap,
     description: 'Buy stocks with strong recent price momentum. Simple and effective in trending markets.',
+    engineNote: '20d breakout · Short-term',
     tags: ['Momentum', 'Easy'],
     defaultParams: {
       darvas_box_period: 20,
@@ -49,8 +51,9 @@ const TEMPLATES = [
     category: 'Contrarian',
     difficulty: 'Advanced',
     difficultyColor: '#ef5350',
-    icon: TrendingDown,
+    icon: Activity,
     description: 'Trade pullbacks to mean. Enter when price is oversold relative to recent average.',
+    engineNote: '30d box · Conservative exit',
     tags: ['Contrarian', 'Range'],
     defaultParams: {
       darvas_box_period: 30,
@@ -108,6 +111,11 @@ export default function TemplatesTab({ selectedTemplate, onSelect }: Props) {
                     <span>Win Rate: <span className="text-[#9ca3af]">{t.winRateHint}</span></span>
                     <span>Sharpe: <span className="text-[#9ca3af]">{t.sharpHint}</span></span>
                   </div>
+                  {'engineNote' in t && (
+                    <p className="mt-1.5 text-[10px] text-[#4b5563]">
+                      ⚙ Darvas Box Engine · {(t as {engineNote: string}).engineNote}
+                    </p>
+                  )}
                 </div>
               </div>
             </button>

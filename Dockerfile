@@ -7,24 +7,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxml2 libxslt1.1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
-RUN pip install --no-cache-dir \
-    "fastapi>=0.100.0" \
-    "uvicorn[standard]>=0.23.0" \
-    "websockets>=11.0" \
-    python-dotenv \
-    pydantic \
-    alpaca-py \
-    pandas \
-    pyarrow \
-    numpy \
-    requests \
-    lxml \
-    html5lib \
-    "sqlalchemy>=2.0" \
-    "psycopg[binary]>=3.1" \
-    pytz \
-    yfinance
+# Install Python dependencies from requirements.txt (확실한 방법)
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy app source
 COPY api/ ./api/
@@ -36,3 +21,4 @@ RUN mkdir -p ./data/cache
 EXPOSE 8000
 
 CMD uvicorn api.main:app --host 0.0.0.0 --port ${PORT:-8000}
+# cache-bust: 1772991750
