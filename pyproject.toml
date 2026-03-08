@@ -12,7 +12,6 @@ dependencies = [
     "lxml>=6.0.2",
     "numpy>=2.4.2",
     "pandas>=3.0.1",
-    "playwright>=1.58.0",
     "psycopg[binary]>=3.3.3",
     "pyarrow>=23.0.1",
     "pydantic>=2.12.5",
@@ -20,4 +19,9 @@ dependencies = [
     "pytz>=2025.2",
     "sqlalchemy>=2.0.46",
     "yfinance>=1.2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "playwright>=1.58.0",  # 로컬 E2E 테스트 전용 (Railway 빌드 제외)
 ]
