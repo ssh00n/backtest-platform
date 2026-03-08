@@ -1,23 +1,23 @@
 'use client'
 
-import { Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 
+// 엔진 지원 여부 표시
 const ENTRY_CONDITIONS = [
-  'Price breaks above 20-day high',
-  'Price breaks above 55-day high',
-  'RSI crosses above 50',
-  'MACD bullish crossover',
-  'Price breaks above Bollinger upper band',
-  'Volume > 1.5x 20-day average',
+  { label: 'Price breaks above 55-day high', supported: true },
+  { label: 'Price breaks above 20-day high', supported: true },
+  { label: 'Volume > 1.5x 20-day average', supported: true },
+  { label: 'RSI crosses above 50', supported: false },
+  { label: 'MACD bullish crossover', supported: false },
+  { label: 'Price breaks above Bollinger upper band', supported: false },
 ]
 
 const EXIT_CONDITIONS = [
-  'Price drops below entry -7%',
-  'Trailing stop 7%',
-  'RSI > 80 (overbought)',
-  'Price touches Bollinger lower band',
-  'Hold for max 20 days',
+  { label: 'Trailing stop 7%', supported: true },
+  { label: 'Price drops below entry -7%', supported: true },
+  { label: 'Hold for max 20 days', supported: true },
+  { label: 'RSI > 80 (overbought)', supported: false },
+  { label: 'Price touches Bollinger lower band', supported: false },
 ]
 
 interface SliderProps {
@@ -47,14 +47,16 @@ interface Props {
 }
 
 export default function RuleBuilderTab({ params, onChange }: Props) {
-  const [selectedEntries, setSelectedEntries] = useState<string[]>([ENTRY_CONDITIONS[0]])
-  const [selectedExits, setSelectedExits] = useState<string[]>([EXIT_CONDITIONS[0]])
+  const [selectedEntries, setSelectedEntries] = useState<string[]>([ENTRY_CONDITIONS[0].label])
+  const [selectedExits, setSelectedExits] = useState<string[]>([EXIT_CONDITIONS[0].label])
 
-  const toggleCondition = (list: string[], setList: (v: string[]) => void, item: string) => {
-    if (list.includes(item)) {
-      if (list.length > 1) setList(list.filter(v => v !== item))
+  const toggleCondition = (list: string[], setList: (v: string[]) => void, item: { label: string; supported: boolean }) => {
+    if (!item.supported) return
+    const label = item.label
+    if (list.includes(label)) {
+      if (list.length > 1) setList(list.filter(v => v !== label))
     } else {
-      setList([...list, item])
+      setList([...list, label])
     }
   }
 
@@ -70,20 +72,33 @@ export default function RuleBuilderTab({ params, onChange }: Props) {
           <span className="text-xs text-[#6b7280] ml-auto">Select all that apply (AND)</span>
         </div>
         <div className="space-y-1.5">
-          {ENTRY_CONDITIONS.map(c => (
-            <button
-              key={c}
-              onClick={() => toggleCondition(selectedEntries, setSelectedEntries, c)}
-              className={`w-full text-left text-sm px-3 py-2.5 rounded-lg border transition-colors ${
-                selectedEntries.includes(c)
-                  ? 'border-[#26a69a] bg-[#26a69a10] text-[#f3f4f6]'
-                  : 'border-[#1f2937] bg-[#0f1117] text-[#9ca3af] hover:border-[#374151]'
-              }`}
-            >
-              <span className="mr-2">{selectedEntries.includes(c) ? '✓' : '○'}</span>
-              {c}
-            </button>
-          ))}
+          {ENTRY_CONDITIONS.map(c => {
+            const isSelected = selectedEntries.includes(c.label)
+            return (
+              <button
+                key={c.label}
+                onClick={() => toggleCondition(selectedEntries, setSelectedEntries, c)}
+                disabled={!c.supported}
+                className={`w-full text-left text-sm px-3 py-2.5 rounded-lg border transition-colors flex items-center justify-between ${
+                  !c.supported
+                    ? 'border-[#1f2937] bg-[#0f1117] text-[#4b5563] cursor-not-allowed opacity-50'
+                    : isSelected
+                      ? 'border-[#26a69a] bg-[#26a69a10] text-[#f3f4f6]'
+                      : 'border-[#1f2937] bg-[#0f1117] text-[#9ca3af] hover:border-[#374151]'
+                }`}
+              >
+                <span>
+                  <span className="mr-2">{isSelected ? '✓' : '○'}</span>
+                  {c.label}
+                </span>
+                {!c.supported && (
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#f59e0b20] text-[#f59e0b] border border-[#f59e0b30] ml-2 shrink-0">
+                    Soon
+                  </span>
+                )}
+              </button>
+            )
+          })}
         </div>
       </div>
 
@@ -95,20 +110,33 @@ export default function RuleBuilderTab({ params, onChange }: Props) {
           <span className="text-xs text-[#6b7280] ml-auto">First triggered exits</span>
         </div>
         <div className="space-y-1.5">
-          {EXIT_CONDITIONS.map(c => (
-            <button
-              key={c}
-              onClick={() => toggleCondition(selectedExits, setSelectedExits, c)}
-              className={`w-full text-left text-sm px-3 py-2.5 rounded-lg border transition-colors ${
-                selectedExits.includes(c)
-                  ? 'border-[#ef5350] bg-[#ef535010] text-[#f3f4f6]'
-                  : 'border-[#1f2937] bg-[#0f1117] text-[#9ca3af] hover:border-[#374151]'
-              }`}
-            >
-              <span className="mr-2">{selectedExits.includes(c) ? '✓' : '○'}</span>
-              {c}
-            </button>
-          ))}
+          {EXIT_CONDITIONS.map(c => {
+            const isSelected = selectedExits.includes(c.label)
+            return (
+              <button
+                key={c.label}
+                onClick={() => toggleCondition(selectedExits, setSelectedExits, c)}
+                disabled={!c.supported}
+                className={`w-full text-left text-sm px-3 py-2.5 rounded-lg border transition-colors flex items-center justify-between ${
+                  !c.supported
+                    ? 'border-[#1f2937] bg-[#0f1117] text-[#4b5563] cursor-not-allowed opacity-50'
+                    : isSelected
+                      ? 'border-[#ef5350] bg-[#ef535010] text-[#f3f4f6]'
+                      : 'border-[#1f2937] bg-[#0f1117] text-[#9ca3af] hover:border-[#374151]'
+                }`}
+              >
+                <span>
+                  <span className="mr-2">{isSelected ? '✓' : '○'}</span>
+                  {c.label}
+                </span>
+                {!c.supported && (
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#f59e0b20] text-[#f59e0b] border border-[#f59e0b30] ml-2 shrink-0">
+                    Soon
+                  </span>
+                )}
+              </button>
+            )
+          })}
         </div>
       </div>
 
@@ -117,16 +145,16 @@ export default function RuleBuilderTab({ params, onChange }: Props) {
         <span className="text-sm font-medium">Risk Parameters</span>
         <MiniSlider
           label="Take Profit (R-multiple)"
-          value={(params.darvas_breakout_pct as number) * 100 || 2}
+          value={Math.round(((params.darvas_breakout_pct as number) * 100 || 2) * 10) / 10}
           min={1} max={5} step={0.5}
-          format={v => `${v}R`}
+          format={v => `${v.toFixed(1)}R`}
           onChange={v => onChange('darvas_breakout_pct', v / 100)}
         />
         <MiniSlider
           label="Stop Loss"
-          value={(params.darvas_stop_loss_pct as number) * 100 || 7}
+          value={Math.round(((params.darvas_stop_loss_pct as number) * 100 || 7) * 10) / 10}
           min={3} max={15} step={1}
-          format={v => `${v}%`}
+          format={v => `${v.toFixed(0)}%`}
           onChange={v => onChange('darvas_stop_loss_pct', v / 100)}
         />
         {/* Toggles */}
