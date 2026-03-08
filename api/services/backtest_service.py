@@ -45,7 +45,7 @@ def _run_backtest_sync(backtest_id: str, request: BacktestRequest):
             max_positions=request.max_positions,
             position_size_pct=request.position_size_pct,
             event_filter_mode=request.event_filter_mode,
-            use_events=request.use_events,
+            use_events=False,  # Playwright(news crawler) 의존성 제거를 위해 비활성화
             use_macro_filter=request.use_macro_filter,
         )
 

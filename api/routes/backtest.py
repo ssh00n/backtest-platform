@@ -21,7 +21,7 @@ async def get_backtest_result(backtest_id: str):
         job = backtest_store.get(backtest_id)
         if not job:
             raise HTTPException(status_code=404, detail="Backtest not found")
-        return {"backtest_id": backtest_id, "status": job.get("status", "running")}
+        return {"backtest_id": backtest_id, "status": job.get("status", "running"), "error": job.get("error")}
     return result
 
 
