@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { TrendingUp } from 'lucide-react'
+import { TrendingUp, Lock } from 'lucide-react'
 
 interface Indicator {
   id: string
@@ -73,11 +73,11 @@ export default function IndicatorsTab({ params, onChange }: Props) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-3">
-        <p className="text-sm text-[#9ca3af]">Select technical indicators to filter and confirm trade signals.</p>
-        <span className="ml-auto text-xs font-semibold px-2 py-0.5 rounded-full bg-[#f59e0b20] text-[#f59e0b] border border-[#f59e0b40] whitespace-nowrap">
-          Coming Soon
-        </span>
+      {/* Coming Soon Banner */}
+      <div className="flex items-center gap-2 bg-[#f59e0b10] border border-[#f59e0b30] rounded-lg px-4 py-3">
+        <Lock size={14} className="text-[#f59e0b] shrink-0" />
+        <p className="text-sm text-[#f59e0b] font-medium">Coming Soon</p>
+        <span className="ml-auto text-xs text-[#9ca3af]">기술 지표 엔진 개발 중 — Templates 또는 Rule Builder를 사용해주세요</span>
       </div>
       <div className="grid gap-3 opacity-50 pointer-events-none select-none">
         {INDICATORS.map(ind => {
@@ -139,9 +139,7 @@ export default function IndicatorsTab({ params, onChange }: Props) {
         })}
       </div>
 
-      <div className="text-xs text-[#f59e0b] bg-[#f59e0b10] border border-[#f59e0b30] rounded-lg p-3">
-        🚧 기술 지표 필터는 현재 개발 중이에요. Templates 또는 Rule Builder 탭을 사용해주세요.
-      </div>
+
     </div>
   )
 }
