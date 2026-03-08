@@ -1,8 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from api.routes import backtest, strategy, market
+from api.routes import backtest, strategy, market, history
+from api.db import init_db
 
 app = FastAPI(title="WFS Backtest API", version="0.1.0")
+
+@app.on_event("startup")
+def on_startup():
+    init_db()
 
 app.add_middleware(
     CORSMiddleware,
@@ -15,6 +20,7 @@ app.add_middleware(
 app.include_router(backtest.router, prefix="/api/backtest", tags=["backtest"])
 app.include_router(strategy.router, prefix="/api/strategy", tags=["strategy"])
 app.include_router(market.router, prefix="/api/market", tags=["market"])
+app.include_router(history.router, prefix="/api/history", tags=["history"])
 
 
 @app.get("/api/health")

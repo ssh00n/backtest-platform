@@ -73,14 +73,22 @@ def _run_backtest_sync(backtest_id: str, request: BacktestRequest):
             for t in result.portfolio.closed_trades
         ]
 
-        backtest_results[backtest_id] = {
+        result_data = {
             "backtest_id": backtest_id,
             "status": "completed",
             "metrics": metrics,
             "equity_curve": equity_curve,
             "trades": trades,
         }
+        backtest_results[backtest_id] = result_data
         backtest_store[backtest_id]["status"] = "completed"
+
+        # DB 저장 (비동기 안전하게 try/except)
+        try:
+            from api.db import save_result
+            save_result(backtest_id, request.__dict__, result_data)
+        except Exception as db_err:
+            print(f"[DB] save_result skipped: {db_err}")
 
     except Exception as e:
         backtest_store[backtest_id]["status"] = "failed"

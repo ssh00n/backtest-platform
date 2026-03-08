@@ -1,0 +1,92 @@
+2026-03-08 13:57:07 [DEBUG  ] hts — Logging initialized — file: /home/ubuntu/backtest-platform/logs/hts_2026-03-08.log
+2026-03-08 13:57:44 [DEBUG  ] hts — Logging initialized — file: /home/ubuntu/backtest-platform/logs/hts_2026-03-08.log
+2026-03-08 13:58:52 [DEBUG  ] hts — Logging initialized — file: /home/ubuntu/backtest-platform/logs/hts_2026-03-08.log
+2026-03-08 14:00:10 [DEBUG  ] hts — Logging initialized — file: /home/ubuntu/backtest-platform/logs/hts_2026-03-08.log
+2026-03-08 14:01:20 [DEBUG  ] hts — Logging initialized — file: /home/ubuntu/backtest-platform/logs/hts_2026-03-08.log
+2026-03-08 14:02:22 [DEBUG  ] hts — Logging initialized — file: /home/ubuntu/backtest-platform/logs/hts_2026-03-08.log
+2026-03-08 14:02:29 [DEBUG  ] hts — Logging initialized — file: /home/ubuntu/backtest-platform/logs/hts_2026-03-08.log
+2026-03-08 14:02:36 [DEBUG  ] hts — Logging initialized — file: /home/ubuntu/backtest-platform/logs/hts_2026-03-08.log
+2026-03-08 14:02:46 [DEBUG  ] hts — Logging initialized — file: /home/ubuntu/backtest-platform/logs/hts_2026-03-08.log
+2026-03-08 14:02:53 [DEBUG  ] hts — Logging initialized — file: /home/ubuntu/backtest-platform/logs/hts_2026-03-08.log
+2026-03-08 14:04:18 [DEBUG  ] hts — Logging initialized — file: /home/ubuntu/backtest-platform/logs/hts_2026-03-08.log
+2026-03-08 14:04:27 [DEBUG  ] hts — Logging initialized — file: /home/ubuntu/backtest-platform/logs/hts_2026-03-08.log
+2026-03-08 14:04:27 [INFO   ] hts.src.backtest.engine — Backtest: 2023-01-03 ~ 2023-01-10 (8 trading days)
+2026-03-08 14:04:27 [INFO   ] hts.src.backtest.engine — Universe: 0 symbols with sufficient data
+2026-03-08 14:04:41 [DEBUG  ] hts — Logging initialized — file: /home/ubuntu/backtest-platform/logs/hts_2026-03-08.log
+2026-03-08 14:04:43 [DEBUG  ] hts.src.data.client — batch 1/1 complete
+2026-03-08 14:04:43 [INFO   ] hts.src.backtest.engine — Backtest: 2023-01-03 ~ 2023-01-30 (19 trading days)
+2026-03-08 14:04:43 [INFO   ] hts.src.backtest.engine — Universe: 5 symbols with sufficient data
+2026-03-08 14:04:43 [INFO   ] hts.src.backtest.engine — [2023-01-03] Regime: BEAR
+2026-03-08 14:04:43 [INFO   ] hts.src.backtest.engine — [2023-01-25] Regime: SIDEWAYS
+2026-03-08 14:04:43 [INFO   ] hts.src.backtest.engine — Backtest complete: 0 trades, final equity $100000
+2026-03-08 14:05:06 [DEBUG  ] hts — Logging initialized — file: /home/ubuntu/backtest-platform/logs/hts_2026-03-08.log
+2026-03-08 14:08:42 [DEBUG  ] hts — Logging initialized — file: /home/ubuntu/backtest-platform/logs/hts_2026-03-08.log
+2026-03-08 14:13:50 [DEBUG  ] hts — Logging initialized — file: /home/ubuntu/backtest-platform/logs/hts_2026-03-08.log
+2026-03-08 14:14:08 [WARNING] hts.src.data.client — batch 3/26 failed (SNDK~): {"message":"invalid symbol: BF-B"}
+
+2026-03-08 14:14:10 [DEBUG  ] hts.src.data.client — batch 5/26 complete
+2026-03-08 14:14:13 [DEBUG  ] hts.src.data.client — batch 10/26 complete
+2026-03-08 14:14:17 [DEBUG  ] hts.src.data.client — batch 15/26 complete
+2026-03-08 14:14:19 [WARNING] hts.src.data.client — batch 19/26 failed (NOW~): {"message":"invalid symbol: BRK-B"}
+
+2026-03-08 14:14:20 [DEBUG  ] hts.src.data.client — batch 20/26 complete
+2026-03-08 14:14:24 [DEBUG  ] hts.src.data.client — batch 25/26 complete
+2026-03-08 14:14:24 [DEBUG  ] hts.src.data.client — batch 26/26 complete
+2026-03-08 14:14:24 [WARNING] hts.src.data.client — 40 symbols failed: ['SNDK', 'BF-B', 'FDS', 'XOM', 'PCAR', 'HPQ', 'HOOD', 'TECH', 'UNH', 'ADP']...
+2026-03-08 14:14:24 [INFO   ] hts.src.backtest.engine — Backtest: 2023-01-03 ~ 2023-06-29 (123 trading days)
+2026-03-08 14:14:24 [INFO   ] hts.src.backtest.engine — Universe: 457 symbols with sufficient data
+2026-03-08 14:14:24 [INFO   ] hts.src.backtest.engine — [2023-01-03] Regime: BEAR
+2026-03-08 14:14:25 [INFO   ] hts.src.backtest.engine — [2023-01-25] Regime: SIDEWAYS
+2026-03-08 14:36:38 [DEBUG  ] hts — Logging initialized — file: /home/ubuntu/backtest-platform/logs/hts_2026-03-08.log
+2026-03-08 14:36:38 [INFO   ] hts.src.backtest.engine — Backtest: 2023-01-03 ~ 2023-06-29 (123 trading days)
+2026-03-08 14:36:39 [INFO   ] hts.src.backtest.engine — Universe: 457 symbols with sufficient data
+2026-03-08 14:36:39 [INFO   ] hts.src.backtest.engine — [2023-01-03] Regime: BEAR
+2026-03-08 14:36:39 [INFO   ] hts.src.backtest.engine — [2023-01-25] Regime: SIDEWAYS
+2026-03-08 14:37:28 [INFO   ] hts.src.backtest.engine — [2023-03-15] Day 50/123 | Equity: $100000 | Open: 0 | Trades: 0
+2026-03-08 14:37:51 [INFO   ] hts.src.backtest.engine — [2023-04-06] Regime: BULL
+2026-03-08 14:38:08 [DEBUG  ] hts.src.backtest.portfolio — [2023-04-19] ENTRY EW @ $86.59, 230 shares, cash=$80000
+2026-03-08 14:38:11 [DEBUG  ] hts.src.backtest.portfolio — [2023-04-21] ENTRY AMZN @ $107.07, 186 shares, cash=$60000
+2026-03-08 14:38:13 [DEBUG  ] hts.src.backtest.portfolio — [2023-04-25] EXIT  AMZN @ $102.47 (STOP_LOSS), pnl=-1.03R, cash=$79141
+2026-03-08 14:38:21 [DEBUG  ] hts.src.backtest.portfolio — [2023-04-28] ENTRY CHTR @ $369.07, 54 shares, cash=$59141
+2026-03-08 14:38:21 [DEBUG  ] hts.src.backtest.portfolio — [2023-04-28] ENTRY GPN @ $112.82, 177 shares, cash=$39141
+2026-03-08 14:38:21 [DEBUG  ] hts.src.backtest.portfolio — [2023-05-01] EXIT  GPN @ $102.90 (STOP_LOSS), pnl=-2.61R, cash=$57381
+2026-03-08 14:38:26 [DEBUG  ] hts.src.backtest.portfolio — [2023-05-03] ENTRY CPT @ $109.30, 182 shares, cash=$37381
+2026-03-08 14:38:26 [DEBUG  ] hts.src.backtest.portfolio — [2023-05-03] ENTRY GNRC @ $114.85, 174 shares, cash=$17381
+2026-03-08 14:38:26 [DEBUG  ] hts.src.backtest.portfolio — [2023-05-04] EXIT  CHTR @ $348.43 (STOP_LOSS), pnl=-1.15R, cash=$36263
+2026-03-08 14:38:28 [DEBUG  ] hts.src.backtest.portfolio — [2023-05-04] ENTRY CTSH @ $62.92, 317 shares, cash=$16263
+2026-03-08 14:38:28 [DEBUG  ] hts.src.backtest.portfolio — [2023-05-08] EXIT  CTSH @ $61.58 (TRAILING_STOP), pnl=-0.73R, cash=$35836
+2026-03-08 14:38:34 [DEBUG  ] hts.src.backtest.portfolio — [2023-05-10] ENTRY APP @ $17.83, 1121 shares, cash=$15836
+2026-03-08 14:38:34 [DEBUG  ] hts.src.backtest.portfolio — [2023-05-11] EXIT  APP @ $21.98 (TRAILING_STOP), pnl=4.62R, cash=$40491
+2026-03-08 14:38:38 [DEBUG  ] hts.src.backtest.portfolio — [2023-05-15] EXIT  CPT @ $108.73 (TRAILING_STOP), pnl=-0.43R, cash=$60388
+2026-03-08 14:38:40 [DEBUG  ] hts.src.backtest.portfolio — [2023-05-15] ENTRY WDC @ $36.79, 543 shares, cash=$40388
+2026-03-08 14:38:49 [DEBUG  ] hts.src.backtest.portfolio — [2023-05-23] EXIT  EW @ $84.66 (TRAILING_STOP), pnl=-0.42R, cash=$59941
+2026-03-08 14:38:53 [DEBUG  ] hts.src.backtest.portfolio — [2023-05-24] ENTRY PANW @ $204.51, 97 shares, cash=$39941
+2026-03-08 14:38:55 [INFO   ] hts.src.backtest.engine — [2023-05-25] Day 100/123 | Equity: $101133 | Open: 3 | Trades: 7
+2026-03-08 14:38:57 [DEBUG  ] hts.src.backtest.portfolio — [2023-05-30] EXIT  PANW @ $212.27 (TRAILING_STOP), pnl=1.16R, cash=$60700
+2026-03-08 14:38:59 [DEBUG  ] hts.src.backtest.portfolio — [2023-05-31] EXIT  GNRC @ $108.81 (TRAILING_STOP), pnl=-0.72R, cash=$79647
+2026-03-08 14:39:05 [DEBUG  ] hts.src.backtest.portfolio — [2023-06-02] ENTRY ESS @ $228.78, 87 shares, cash=$59647
+2026-03-08 14:39:11 [DEBUG  ] hts.src.backtest.portfolio — [2023-06-07] ENTRY BXP @ $54.53, 366 shares, cash=$39647
+2026-03-08 14:39:11 [DEBUG  ] hts.src.backtest.portfolio — [2023-06-07] ENTRY WSM @ $129.72, 154 shares, cash=$19647
+2026-03-08 14:39:11 [DEBUG  ] hts.src.backtest.portfolio — [2023-06-16] EXIT  WSM @ $124.52 (TRAILING_STOP), pnl=-0.89R, cash=$38845
+2026-03-08 14:39:13 [DEBUG  ] hts.src.backtest.portfolio — [2023-06-16] ENTRY ES @ $72.15, 277 shares, cash=$18845
+2026-03-08 14:39:13 [DEBUG  ] hts.src.backtest.portfolio — [2023-06-20] EXIT  ES @ $70.57 (STOP_LOSS), pnl=-1.86R, cash=$38406
+2026-03-08 14:39:14 [DEBUG  ] hts.src.backtest.portfolio — [2023-06-21] EXIT  WDC @ $38.38 (TRAILING_STOP), pnl=0.57R, cash=$59273
+2026-03-08 14:39:16 [DEBUG  ] hts.src.backtest.portfolio — [2023-06-22] EXIT  ESS @ $224.78 (TRAILING_STOP), pnl=-0.42R, cash=$78923
+2026-03-08 14:39:16 [DEBUG  ] hts.src.backtest.portfolio — [2023-06-22] EXIT  BXP @ $52.25 (TRAILING_STOP), pnl=-0.62R, cash=$98085
+2026-03-08 14:39:21 [DEBUG  ] hts.src.backtest.portfolio — [2023-06-26] ENTRY NRG @ $35.95, 556 shares, cash=$78085
+2026-03-08 14:39:23 [DEBUG  ] hts.src.backtest.portfolio — [2023-06-27] ENTRY CHTR @ $354.19, 56 shares, cash=$58085
+2026-03-08 14:39:26 [DEBUG  ] hts.src.backtest.portfolio — [2023-06-29] EXIT  NRG @ $37.13 (END_OF_BACKTEST), pnl=0.72R, cash=$78745
+2026-03-08 14:39:26 [DEBUG  ] hts.src.backtest.portfolio — [2023-06-29] EXIT  CHTR @ $362.32 (END_OF_BACKTEST), pnl=0.56R, cash=$99204
+2026-03-08 14:39:26 [INFO   ] hts.src.backtest.engine — Backtest complete: 16 trades, final equity $99245
+2026-03-08 14:59:13 [DEBUG  ] hts — Logging initialized — file: /home/ubuntu/backtest-platform/logs/hts_2026-03-08.log
+2026-03-08 14:59:15 [DEBUG  ] hts.src.data.client — batch 1/1 complete
+2026-03-08 14:59:15 [INFO   ] hts.src.backtest.engine — Backtest: 2023-01-03 ~ 2023-06-29 (123 trading days)
+2026-03-08 14:59:15 [INFO   ] hts.src.backtest.engine — Universe: 10 symbols with sufficient data
+2026-03-08 14:59:15 [INFO   ] hts.src.backtest.engine — [2023-01-03] Regime: BEAR
+2026-03-08 14:59:15 [INFO   ] hts.src.backtest.engine — [2023-01-25] Regime: SIDEWAYS
+2026-03-08 14:59:17 [INFO   ] hts.src.backtest.engine — [2023-03-15] Day 50/123 | Equity: $100000 | Open: 0 | Trades: 0
+2026-03-08 14:59:17 [INFO   ] hts.src.backtest.engine — [2023-04-06] Regime: BULL
+2026-03-08 14:59:18 [DEBUG  ] hts.src.backtest.portfolio — [2023-04-21] ENTRY AMZN @ $107.07, 186 shares, cash=$80000
+2026-03-08 14:59:18 [DEBUG  ] hts.src.backtest.portfolio — [2023-04-25] EXIT  AMZN @ $102.47 (STOP_LOSS), pnl=-1.03R, cash=$99141
+2026-03-08 14:59:19 [INFO   ] hts.src.backtest.engine — [2023-05-25] Day 100/123 | Equity: $99141 | Open: 0 | Trades: 1
+2026-03-08 14:59:19 [INFO   ] hts.src.backtest.engine — Backtest complete: 1 trades, final equity $99141
