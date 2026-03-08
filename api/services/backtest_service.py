@@ -65,22 +65,14 @@ def _run_backtest_sync(backtest_id: str, request: BacktestRequest):
             for ts, v in result.portfolio.equity_curve
         ]
 
-        # SPY 벤치마크 — string 날짜 비교 방식 (tz/slicing 이슈 완전 우회)
+        # SPY 누적 수익률 (equity_curve와 동일 날짜 범위)
         try:
-            spy_raw = spy_df["close"].sort_index()
-            print(f"[SPY DEBUG] spy_raw len={len(spy_raw)}, tz={spy_raw.index.tz}, start={request.start_date}, end={request.end_date}")
-            if len(spy_raw) > 0:
-                print(f"[SPY DEBUG] first ts={spy_raw.index[0]!r}, type={type(spy_raw.index[0])}")
+            spy_close = spy_df["close"].loc[request.start_date:request.end_date]
             spy_equity_curve = [
                 {"date": ts.strftime("%Y-%m-%d"), "value": round(float(v), 4)}
-                for ts, v in spy_raw.items()
-                if request.start_date <= ts.strftime("%Y-%m-%d") <= request.end_date
+                for ts, v in spy_close.items()
             ]
-            print(f"[SPY DEBUG] spy_equity_curve len={len(spy_equity_curve)}")
-        except Exception as e:
-            import logging
-            logging.getLogger(__name__).warning(f"SPY equity curve failed: {e}")
-            print(f"[SPY DEBUG] EXCEPTION: {e}")
+        except Exception:
             spy_equity_curve = []
 
         trades = [
