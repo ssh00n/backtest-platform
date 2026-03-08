@@ -7,24 +7,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxml2 libxslt1.1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
-RUN pip install --no-cache-dir \
-    "fastapi>=0.100.0" \
-    "uvicorn[standard]>=0.23.0" \
-    "websockets>=11.0" \
-    python-dotenv \
-    pydantic \
-    alpaca-py \
-    pandas \
-    pyarrow \
-    numpy \
-    requests \
-    lxml \
-    html5lib \
-    "sqlalchemy>=2.0" \
-    "psycopg[binary]>=3.1" \
-    pytz \
-    yfinance
+# Install from pyproject.toml (단일 소스, 싱크 문제 없음)
+COPY pyproject.toml .
+RUN pip install --no-cache-dir ".[api]" 2>/dev/null || pip install --no-cache-dir .
 
 # Copy app source
 COPY api/ ./api/
