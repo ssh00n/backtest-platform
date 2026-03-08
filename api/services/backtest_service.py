@@ -67,12 +67,21 @@ def _run_backtest_sync(backtest_id: str, request: BacktestRequest):
 
         # SPY 누적 수익률 (equity_curve와 동일 날짜 범위)
         try:
-            spy_close = spy_df["close"].loc[request.start_date:request.end_date]
+            import pandas as pd
+            spy_raw = spy_df["close"].sort_index()
+            # tz-aware index를 tz-naive로 변환 후 날짜 슬라이싱
+            if spy_raw.index.tz is not None:
+                spy_raw.index = spy_raw.index.tz_convert("UTC").tz_localize(None)
+            start_dt = pd.Timestamp(request.start_date)
+            end_dt = pd.Timestamp(request.end_date)
+            spy_close = spy_raw.loc[start_dt:end_dt]
             spy_equity_curve = [
                 {"date": ts.strftime("%Y-%m-%d"), "value": round(float(v), 4)}
                 for ts, v in spy_close.items()
             ]
-        except Exception:
+        except Exception as e:
+            import logging
+            logging.getLogger(__name__).warning(f"SPY equity curve failed: {e}")
             spy_equity_curve = []
 
         trades = [
