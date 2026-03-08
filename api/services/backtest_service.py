@@ -65,19 +65,18 @@ def _run_backtest_sync(backtest_id: str, request: BacktestRequest):
             for ts, v in result.portfolio.equity_curve
         ]
 
-        # SPY 누적 수익률 (equity_curve와 동일 날짜 범위)
+        # SPY 벤치마크 (yfinance 직접 fetch — Alpaca MultiIndex 의존 제거)
         try:
-            import pandas as pd
-            spy_raw = spy_df["close"].sort_index()
-            # 인덱스 timezone에 맞춰 슬라이싱 (tz-aware/naive 모두 대응)
-            tz = spy_raw.index.tz
-            start_dt = pd.Timestamp(request.start_date, tz=tz) if tz else pd.Timestamp(request.start_date)
-            end_dt = pd.Timestamp(request.end_date, tz=tz) if tz else pd.Timestamp(request.end_date)
-            spy_close = spy_raw.loc[start_dt:end_dt]
-            spy_equity_curve = [
-                {"date": ts.strftime("%Y-%m-%d"), "value": round(float(v), 4)}
-                for ts, v in spy_close.items()
-            ]
+            import yfinance as yf
+            spy_ticker = yf.download("SPY", start=request.start_date, end=request.end_date, progress=False, auto_adjust=True)
+            if not spy_ticker.empty:
+                spy_close_col = spy_ticker["Close"]
+                spy_equity_curve = [
+                    {"date": ts.strftime("%Y-%m-%d"), "value": round(float(v), 4)}
+                    for ts, v in spy_close_col.items()
+                ]
+            else:
+                spy_equity_curve = []
         except Exception as e:
             import logging
             logging.getLogger(__name__).warning(f"SPY equity curve failed: {e}")
