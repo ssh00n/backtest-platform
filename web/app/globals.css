@@ -14,6 +14,8 @@
   --color-border-default: var(--border-default);
   --color-accent-profit: var(--accent-profit);
   --color-accent-loss: var(--accent-loss);
+  --font-family-sans: var(--font-sans), system-ui, sans-serif;
+  --font-family-mono: var(--font-mono), 'JetBrains Mono', monospace;
 }
 
 body {
