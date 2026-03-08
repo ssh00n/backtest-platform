@@ -31,7 +31,7 @@ export function EquityCurve({ data }: { data: EquityPoint[] }) {
           <Tooltip
             contentStyle={{ background: '#111827', border: '1px solid #1f2937', borderRadius: 8 }}
             labelStyle={{ color: '#9ca3af' }}
-            formatter={(v: number) => [`$${v.toLocaleString()}`, 'Portfolio']}
+            formatter={(v) => [`$${Number(v).toLocaleString()}`, 'Portfolio']}
           />
           <Area
             type="monotone"
