@@ -1,6 +1,6 @@
 'use client'
 
-import { Zap, TrendingDown, BarChart2, CheckCircle2 } from 'lucide-react'
+import { Zap, TrendingDown, TrendingUp, CheckCircle2, Activity } from 'lucide-react'
 
 const TEMPLATES = [
   {
@@ -9,7 +9,7 @@ const TEMPLATES = [
     category: 'Breakout',
     difficulty: 'Intermediate',
     difficultyColor: '#f59e0b',
-    icon: BarChart2,
+    icon: TrendingUp,
     description: 'Identify stocks making new highs forming box-shaped consolidation patterns, then buy on breakout.',
     tags: ['Trend Following', 'Momentum'],
     defaultParams: {
@@ -49,7 +49,7 @@ const TEMPLATES = [
     category: 'Mean Reversion',
     difficulty: 'Advanced',
     difficultyColor: '#ef5350',
-    icon: TrendingDown,
+    icon: Activity,
     description: 'Trade pullbacks to mean. Enter when price is oversold relative to recent average.',
     tags: ['Contrarian', 'Range'],
     defaultParams: {
