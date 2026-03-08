@@ -48,7 +48,7 @@ def _run_backtest_sync(backtest_id: str, request: BacktestRequest):
             use_events=False,  # Playwright(news crawler) 의존성 제거를 위해 비활성화
             use_macro_filter=request.use_macro_filter,
             # Darvas Box 파라미터 매핑
-            trailing_stop_r=request.darvas_stop_loss_pct,  # 7% stop → 0.07R
+            trailing_stop_r=request.darvas_stop_loss_pct / 0.01,  # pct → R 배수 (0.07 → 7.0R)
             confirm_breakout=request.darvas_trailing_stop,  # trailing stop 활성화 시 breakout 확인
         )
 
