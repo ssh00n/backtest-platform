@@ -21,6 +21,7 @@ RUN pip install --no-cache-dir \
     requests \
     lxml \
     html5lib \
+    pytz \
     "sqlalchemy>=2.0" \
     "psycopg[binary]>=3.1" \
     pytz \
