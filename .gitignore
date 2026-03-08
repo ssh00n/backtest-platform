@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.env
+.env.*
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+*.pyc
+
+# Next.js
+web/.env.local
+web/.next/
+web/node_modules/
+web/out/
+
+# Data cache
+data/
+*.parquet
+*.csv
+*.pkl
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
