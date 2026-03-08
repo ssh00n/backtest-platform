@@ -89,13 +89,13 @@ def _run_backtest_sync(backtest_id: str, request: BacktestRequest):
                 return [sanitize(v) for v in obj]
             return obj
 
-        result_data = {
+        result_data = sanitize({
             "backtest_id": backtest_id,
             "status": "completed",
-            "metrics": sanitize(metrics),
+            "metrics": metrics,
             "equity_curve": equity_curve,
             "trades": trades,
-        }
+        })
         backtest_results[backtest_id] = result_data
         backtest_store[backtest_id]["status"] = "completed"
 
