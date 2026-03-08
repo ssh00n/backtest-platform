@@ -28,6 +28,7 @@ export function EquityCurve({ data }: { data: EquityPoint[] }) {
           />
           <YAxis
             tick={{ fill: '#9ca3af', fontSize: 11 }}
+            domain={['auto', 'auto']}
             tickFormatter={(v: number) => `$${(v / 1000).toFixed(0)}k`}
           />
           <Tooltip

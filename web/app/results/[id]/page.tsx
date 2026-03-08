@@ -74,7 +74,7 @@ export default function ResultsPage() {
   const kpis = [
     { label: 'Win Rate', value: `${m.win_rate_pct?.toFixed(1) ?? '-'}%`, positive: (m.win_rate_pct ?? 0) > 50 },
     { label: 'Profit Factor', value: m.profit_factor?.toFixed(2) ?? '-', positive: (m.profit_factor ?? 0) > 1 },
-    { label: 'Max Drawdown', value: `${m.max_drawdown_pct?.toFixed(1) ?? '-'}%`, positive: false },
+    { label: 'Max Drawdown', value: `${m.max_drawdown_pct?.toFixed(1) ?? '-'}%`, positive: null },
     { label: 'Sharpe Ratio', value: m.sharpe_ratio?.toFixed(2) ?? '-', positive: (m.sharpe_ratio ?? 0) > 1 },
     { label: 'Total Trades', value: String(m.total_trades ?? '-'), positive: null },
     { label: 'Total Return', value: `${m.total_return_pct?.toFixed(1) ?? '-'}%`, positive: (m.total_return_pct ?? 0) > 0 },
