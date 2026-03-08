@@ -26,6 +26,7 @@ interface BacktestData {
     }
   }
   equity_curve?: Array<{ date: string; value: number }>
+  spy_equity_curve?: Array<{ date: string; value: number }>
   trades?: Array<{
     date: string
     symbol: string
@@ -128,6 +129,7 @@ export default function ResultsPage() {
           <BenchmarkChart
             equityCurve={data.equity_curve ?? []}
             initialCapital={initialCapital}
+            spyBenchmark={data.spy_equity_curve ?? null}
           />
         </div>
 
