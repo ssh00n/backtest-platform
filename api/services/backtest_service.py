@@ -47,6 +47,9 @@ def _run_backtest_sync(backtest_id: str, request: BacktestRequest):
             event_filter_mode=request.event_filter_mode,
             use_events=False,  # Playwright(news crawler) 의존성 제거를 위해 비활성화
             use_macro_filter=request.use_macro_filter,
+            # Darvas Box 파라미터 매핑
+            trailing_stop_r=request.darvas_stop_loss_pct,  # 7% stop → 0.07R
+            confirm_breakout=request.darvas_trailing_stop,  # trailing stop 활성화 시 breakout 확인
         )
 
         # run_backtest는 start_date/end_date를 str로 받음 (내부에서 pd.Timestamp 변환)
