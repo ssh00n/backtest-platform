@@ -52,7 +52,7 @@ interface Props {
 }
 
 export default function IndicatorsTab({ params, onChange }: Props) {
-  const [selected, setSelected] = useState<string[]>(['ma'])
+  const [selected, setSelected] = useState<string[]>([])
   const [localParams, setLocalParams] = useState<Record<string, number>>({
     ma_period: 20,
     rsi_period: 14, rsi_overbought: 70,
@@ -73,8 +73,13 @@ export default function IndicatorsTab({ params, onChange }: Props) {
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-[#9ca3af]">Select technical indicators to filter and confirm trade signals.</p>
-      <div className="grid gap-3">
+      <div className="flex items-center gap-3">
+        <p className="text-sm text-[#9ca3af]">Select technical indicators to filter and confirm trade signals.</p>
+        <span className="ml-auto text-xs font-semibold px-2 py-0.5 rounded-full bg-[#f59e0b20] text-[#f59e0b] border border-[#f59e0b40] whitespace-nowrap">
+          Coming Soon
+        </span>
+      </div>
+      <div className="grid gap-3 opacity-50 pointer-events-none select-none">
         {INDICATORS.map(ind => {
           const isSelected = selected.includes(ind.id)
           return (
@@ -134,8 +139,8 @@ export default function IndicatorsTab({ params, onChange }: Props) {
         })}
       </div>
 
-      <div className="text-xs text-[#6b7280] bg-[#1f2937] rounded-lg p-3">
-        💡 선택한 지표들은 진입 신호 필터로 동작합니다. 지표가 많을수록 신호가 엄격해져 거래 횟수가 줄어들 수 있어요.
+      <div className="text-xs text-[#f59e0b] bg-[#f59e0b10] border border-[#f59e0b30] rounded-lg p-3">
+        🚧 기술 지표 필터는 현재 개발 중이에요. Templates 또는 Rule Builder 탭을 사용해주세요.
       </div>
     </div>
   )
