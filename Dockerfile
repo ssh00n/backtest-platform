@@ -22,7 +22,7 @@ RUN pip install --no-cache-dir \
     lxml \
     html5lib \
     "sqlalchemy>=2.0" \
-    psycopg2-binary \
+    "psycopg[binary]>=3.1" \
     pytz \
     yfinance
 
