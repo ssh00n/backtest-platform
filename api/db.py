@@ -47,6 +47,11 @@ def init_db():
                         spy_equity_curve JSONB
                     )
                 """)
+                # 기존 DB에 spy_equity_curve 컬럼 없을 경우 마이그레이션
+                cur.execute("""
+                    ALTER TABLE backtest_runs
+                    ADD COLUMN IF NOT EXISTS spy_equity_curve JSONB
+                """)
         print("[DB] init_db OK")
     except Exception as e:
         print(f"[DB] init_db error: {e}")
