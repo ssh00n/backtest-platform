@@ -3,8 +3,11 @@ name = "hoon-trading-system"
 version = "0.1.0"
 description = "US Stock Algorithmic Trading & Backtesting System"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 dependencies = [
+    "fastapi>=0.100.0",
+    "uvicorn[standard]>=0.23.0",
+    "websockets>=11.0",
     "alpaca-py>=0.43.2",
     "lxml>=6.0.2",
     "numpy>=2.4.2",
