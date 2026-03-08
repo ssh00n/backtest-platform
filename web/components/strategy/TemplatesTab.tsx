@@ -111,11 +111,9 @@ export default function TemplatesTab({ selectedTemplate, onSelect }: Props) {
                     <span>Win Rate: <span className="text-[#9ca3af]">{t.winRateHint}</span></span>
                     <span>Sharpe: <span className="text-[#9ca3af]">{t.sharpHint}</span></span>
                   </div>
-                  {'engineNote' in t && (
-                    <p className="mt-1.5 text-[10px] text-[#4b5563]">
-                      ⚙ Darvas Box Engine · {(t as {engineNote: string}).engineNote}
-                    </p>
-                  )}
+                  <div className="mt-3 pt-2.5 border-t border-[#1f2937] text-[10px] text-[#4b5563]">
+                    ⚙️ Darvas Box Engine · {(t.defaultParams as {darvas_box_period: number}).darvas_box_period}d breakout
+                  </div>
                 </div>
               </div>
             </button>
