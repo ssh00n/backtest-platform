@@ -20,7 +20,8 @@ RUN pip install --no-cache-dir \
     numpy \
     requests \
     lxml \
-    html5lib
+    html5lib \
+    psycopg2-binary
 
 # Copy app source
 COPY api/ ./api/
