@@ -26,7 +26,7 @@ const TEMPLATES = [
   {
     id: 'momentum',
     name: 'Momentum',
-    category: 'Momentum',
+    category: 'Trend',
     difficulty: 'Beginner',
     difficultyColor: '#26a69a',
     icon: Zap,
@@ -46,7 +46,7 @@ const TEMPLATES = [
   {
     id: 'mean_reversion',
     name: 'Mean Reversion',
-    category: 'Mean Reversion',
+    category: 'Contrarian',
     difficulty: 'Advanced',
     difficultyColor: '#ef5350',
     icon: Activity,
