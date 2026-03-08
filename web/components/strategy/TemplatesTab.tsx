@@ -11,6 +11,7 @@ const TEMPLATES = [
     difficultyColor: '#f59e0b',
     icon: TrendingUp,
     description: 'Identify stocks making new highs forming box-shaped consolidation patterns, then buy on breakout.',
+    engineNote: '55d breakout · Trend-following',
     tags: ['Trend Following', 'Momentum'],
     defaultParams: {
       darvas_box_period: 55,
@@ -31,7 +32,7 @@ const TEMPLATES = [
     difficultyColor: '#26a69a',
     icon: Zap,
     description: 'Buy stocks with strong recent price momentum. Simple and effective in trending markets.',
-    engineNote: 'Short-term breakout (20d)',
+    engineNote: '20d breakout · Short-term',
     tags: ['Momentum', 'Easy'],
     defaultParams: {
       darvas_box_period: 20,
@@ -52,7 +53,7 @@ const TEMPLATES = [
     difficultyColor: '#ef5350',
     icon: Activity,
     description: 'Trade pullbacks to mean. Enter when price is oversold relative to recent average.',
-    engineNote: 'Long-term breakout (30d)',
+    engineNote: '30d box · Conservative exit',
     tags: ['Contrarian', 'Range'],
     defaultParams: {
       darvas_box_period: 30,
@@ -110,9 +111,9 @@ export default function TemplatesTab({ selectedTemplate, onSelect }: Props) {
                     <span>Win Rate: <span className="text-[#9ca3af]">{t.winRateHint}</span></span>
                     <span>Sharpe: <span className="text-[#9ca3af]">{t.sharpHint}</span></span>
                   </div>
-                  {t.id !== 'darvas_box' && (
+                  {'engineNote' in t && (
                     <p className="mt-1.5 text-[10px] text-[#4b5563]">
-                      ⚙ Powered by Darvas Box Engine{'engineNote' in t && ` · ${(t as {engineNote: string}).engineNote}`}
+                      ⚙ Darvas Box Engine · {(t as {engineNote: string}).engineNote}
                     </p>
                   )}
                 </div>
