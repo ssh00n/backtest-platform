@@ -30,12 +30,16 @@ async def get_backtest_result(backtest_id: str):
     # 3. DB fallback (재배포 후 메모리 초기화된 경우)
     db_row = get_run(backtest_id)
     if db_row:
+        # DB row 전체를 반환 (metrics, equity_curve, trades, spy_equity_curve 등 포함)
         return {
-            "backtest_id": db_row["id"],
+            "backtest_id": db_row.get("id", backtest_id),
             "status": db_row.get("status", "completed"),
             "metrics": db_row.get("metrics") or {},
             "equity_curve": db_row.get("equity_curve") or [],
+            "spy_equity_curve": db_row.get("spy_equity_curve") or [],
             "trades": db_row.get("trades") or [],
+            "start_date": db_row.get("start_date"),
+            "end_date": db_row.get("end_date"),
         }
 
     raise HTTPException(status_code=404, detail="Backtest not found")
