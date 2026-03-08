@@ -22,7 +22,7 @@ RUN pip install --no-cache-dir \
     lxml \
     html5lib \
     "sqlalchemy>=2.0" \
-    "psycopg[binary]>=3.1"
+    psycopg2-binary
 
 # Copy app source
 COPY api/ ./api/
