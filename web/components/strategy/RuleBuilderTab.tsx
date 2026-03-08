@@ -154,7 +154,7 @@ export default function RuleBuilderTab({ params, onChange }: Props) {
           label="Stop Loss"
           value={Math.round(((params.darvas_stop_loss_pct as number) * 100 || 7) * 10) / 10}
           min={3} max={15} step={1}
-          format={v => `${v.toFixed(1)}%`}
+          format={v => `${v.toFixed(0)}%`}
           onChange={v => onChange('darvas_stop_loss_pct', v / 100)}
         />
         {/* Toggles */}
