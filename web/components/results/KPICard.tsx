@@ -6,14 +6,14 @@ interface KPICardProps {
 
 export function KPICard({ label, value, positive }: KPICardProps) {
   const valueColor =
-    positive === true ? 'text-emerald-400' :
-    positive === false ? 'text-red-400' :
+    positive === true ? 'text-[#26a69a]' :
+    positive === false ? 'text-[#ef5350]' :
     'text-gray-100'
 
   return (
-    <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
-      <p className="text-gray-400 text-sm mb-1">{label}</p>
-      <p className={`text-2xl font-mono font-semibold ${valueColor}`}>{value}</p>
+    <div className="bg-[#111827] border border-[#1f2937] rounded-xl p-6">
+      <p className="text-[#9ca3af] text-sm mb-1">{label}</p>
+      <p className={`text-xl lg:text-lg font-mono font-semibold ${valueColor}`}>{value}</p>
     </div>
   )
 }

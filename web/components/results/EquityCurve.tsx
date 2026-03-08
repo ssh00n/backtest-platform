@@ -22,6 +22,8 @@ export function EquityCurve({ data }: { data: EquityPoint[] }) {
           <XAxis
             dataKey="date"
             tick={{ fill: '#9ca3af', fontSize: 11 }}
+            interval="preserveStartEnd"
+            minTickGap={50}
             tickFormatter={(v: string) => v.slice(0, 7)}
           />
           <YAxis
