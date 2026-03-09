@@ -14,4 +14,8 @@ requests
 sqlalchemy>=2.0.46
 yfinance>=1.2.0
 html5lib
-# force-reinstall: 1772992278
+# auth
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+python-multipart>=0.0.9
+pydantic[email]>=2.12.5

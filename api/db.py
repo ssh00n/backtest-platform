@@ -26,6 +26,29 @@ def init_db():
     try:
         with get_conn() as conn:
             with conn.cursor() as cur:
+                # users 테이블
+                cur.execute("""
+                    CREATE TABLE IF NOT EXISTS users (
+                        id            TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+                        email         VARCHAR(255) UNIQUE NOT NULL,
+                        username      VARCHAR(100) UNIQUE NOT NULL,
+                        password_hash VARCHAR(255) NOT NULL,
+                        is_active     BOOLEAN DEFAULT TRUE,
+                        created_at    TIMESTAMPTZ DEFAULT NOW(),
+                        updated_at    TIMESTAMPTZ DEFAULT NOW()
+                    )
+                """)
+                # refresh_tokens 테이블
+                cur.execute("""
+                    CREATE TABLE IF NOT EXISTS refresh_tokens (
+                        id         TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+                        user_id    TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                        token      TEXT UNIQUE NOT NULL,
+                        expires_at TIMESTAMPTZ NOT NULL,
+                        created_at TIMESTAMPTZ DEFAULT NOW()
+                    )
+                """)
+                # backtest_runs 테이블
                 cur.execute("""
                     CREATE TABLE IF NOT EXISTS backtest_runs (
                         id          TEXT PRIMARY KEY,
@@ -47,10 +70,18 @@ def init_db():
                         spy_equity_curve JSONB
                     )
                 """)
-                # 기존 DB에 spy_equity_curve 컬럼 없을 경우 마이그레이션
+                # 마이그레이션: 기존 테이블에 컬럼 추가
                 cur.execute("""
                     ALTER TABLE backtest_runs
                     ADD COLUMN IF NOT EXISTS spy_equity_curve JSONB
+                """)
+                cur.execute("""
+                    ALTER TABLE backtest_runs
+                    ADD COLUMN IF NOT EXISTS user_id TEXT REFERENCES users(id)
+                """)
+                cur.execute("""
+                    CREATE INDEX IF NOT EXISTS ix_backtest_runs_user_id
+                    ON backtest_runs(user_id)
                 """)
         print("[DB] init_db OK")
     except Exception as e:
@@ -147,3 +178,130 @@ def get_run(backtest_id: str) -> dict | None:
     except Exception as e:
         print(f"[DB] get_run error: {e}")
         return None
+
+
+# ── Auth DB helpers ──────────────────────────────────────────────────────────
+
+def create_user(email: str, username: str, password_hash: str) -> dict | None:
+    """유저 생성"""
+    if not DATABASE_URL:
+        return None
+    try:
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    INSERT INTO users (email, username, password_hash)
+                    VALUES (%s, %s, %s)
+                    RETURNING id, email, username, is_active, created_at
+                """, (email, username, password_hash))
+                cols = [d.name for d in cur.description]
+                row = cur.fetchone()
+        if not row:
+            return None
+        d = dict(zip(cols, row))
+        if isinstance(d.get("created_at"), datetime):
+            d["created_at"] = d["created_at"].isoformat()
+        return d
+    except Exception as e:
+        print(f"[DB] create_user error: {e}")
+        return None
+
+
+def get_user_by_email(email: str) -> dict | None:
+    """이메일로 유저 조회"""
+    if not DATABASE_URL:
+        return None
+    try:
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT id, email, username, password_hash, is_active, created_at
+                    FROM users WHERE email = %s
+                """, (email,))
+                cols = [d.name for d in cur.description]
+                row = cur.fetchone()
+        if not row:
+            return None
+        d = dict(zip(cols, row))
+        if isinstance(d.get("created_at"), datetime):
+            d["created_at"] = d["created_at"].isoformat()
+        return d
+    except Exception as e:
+        print(f"[DB] get_user_by_email error: {e}")
+        return None
+
+
+def get_user_by_id(user_id: str) -> dict | None:
+    """ID로 유저 조회"""
+    if not DATABASE_URL:
+        return None
+    try:
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT id, email, username, is_active, created_at
+                    FROM users WHERE id = %s
+                """, (user_id,))
+                cols = [d.name for d in cur.description]
+                row = cur.fetchone()
+        if not row:
+            return None
+        d = dict(zip(cols, row))
+        if isinstance(d.get("created_at"), datetime):
+            d["created_at"] = d["created_at"].isoformat()
+        return d
+    except Exception as e:
+        print(f"[DB] get_user_by_id error: {e}")
+        return None
+
+
+def save_refresh_token(user_id: str, token: str, expires_at: datetime) -> bool:
+    """Refresh token 저장"""
+    if not DATABASE_URL:
+        return False
+    try:
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    INSERT INTO refresh_tokens (user_id, token, expires_at)
+                    VALUES (%s, %s, %s)
+                """, (user_id, token, expires_at))
+        return True
+    except Exception as e:
+        print(f"[DB] save_refresh_token error: {e}")
+        return False
+
+
+def get_refresh_token(token: str) -> dict | None:
+    """Refresh token 조회"""
+    if not DATABASE_URL:
+        return None
+    try:
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT id, user_id, token, expires_at
+                    FROM refresh_tokens WHERE token = %s
+                """, (token,))
+                cols = [d.name for d in cur.description]
+                row = cur.fetchone()
+        if not row:
+            return None
+        return dict(zip(cols, row))
+    except Exception as e:
+        print(f"[DB] get_refresh_token error: {e}")
+        return None
+
+
+def delete_refresh_token(token: str) -> bool:
+    """Refresh token 삭제 (로그아웃)"""
+    if not DATABASE_URL:
+        return False
+    try:
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("DELETE FROM refresh_tokens WHERE token = %s", (token,))
+        return True
+    except Exception as e:
+        print(f"[DB] delete_refresh_token error: {e}")
+        return False
