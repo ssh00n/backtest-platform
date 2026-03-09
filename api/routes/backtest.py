@@ -1,17 +1,22 @@
 import asyncio
-from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, Depends, HTTPException, Request, WebSocket, WebSocketDisconnect
 from api.models.backtest import BacktestRequest
 from api.services.backtest_service import (
     start_backtest, get_next_heartbeat, backtest_store, backtest_results
 )
 from api.db import get_run
+from api.deps import get_optional_current_user
 
 router = APIRouter()
 
 
 @router.post("")
-async def create_backtest(request: BacktestRequest):
-    backtest_id = await start_backtest(request)
+async def create_backtest(
+    request: BacktestRequest,
+    current_user: dict | None = Depends(get_optional_current_user),
+):
+    user_id = current_user["id"] if current_user else None
+    backtest_id = await start_backtest(request, user_id=user_id)
     return {"backtest_id": backtest_id, "status": "running"}
 
 
