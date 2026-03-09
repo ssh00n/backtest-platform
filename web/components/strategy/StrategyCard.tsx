@@ -57,10 +57,10 @@ export default function StrategyCard({ strategy, isSelected, onSelect }: Props) 
           </span>
           <span className={`px-2 py-0.5 text-xs font-medium rounded-md ${
             strategy.difficulty === 'Beginner'
-              ? 'text-green-400 bg-green-400/10'
+              ? 'bg-[#0d3b2e] text-[#26a69a]'
               : strategy.difficulty === 'Intermediate'
-              ? 'text-yellow-400 bg-yellow-400/10'
-              : 'text-red-400 bg-red-400/10'
+              ? 'bg-[#3b3a0d] text-[#f59e0b]'
+              : 'bg-[#3b0d0d] text-[#ef5350]'
           }`}>
             {strategy.difficulty}
           </span>
