@@ -87,10 +87,10 @@ def init_db():
                 cur.execute("""
                     CREATE TABLE IF NOT EXISTS strategy_configs (
                         id          TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
-                        user_id     TEXT REFERENCES users(id),
+                        user_id     TEXT REFERENCES users(id) ON DELETE SET NULL,
                         name        VARCHAR(255) NOT NULL,
                         strategy    VARCHAR(100) NOT NULL,
-                        config      JSONB NOT NULL DEFAULT '{}',
+                        params      JSONB NOT NULL DEFAULT '{}',
                         is_public   BOOLEAN DEFAULT FALSE,
                         view_count  INTEGER DEFAULT 0,
                         created_at  TIMESTAMPTZ DEFAULT NOW(),
