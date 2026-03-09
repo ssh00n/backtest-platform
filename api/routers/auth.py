@@ -9,7 +9,7 @@ from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Cookie, HTTPException, Response, status
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
 from api import db
 
@@ -28,8 +28,8 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class RegisterRequest(BaseModel):
     email: EmailStr
-    username: str
-    password: str
+    username: str = Field(min_length=2, max_length=100)
+    password: str = Field(min_length=8)
 
 
 class LoginRequest(BaseModel):
