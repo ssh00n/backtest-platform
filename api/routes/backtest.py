@@ -4,7 +4,7 @@ from api.models.backtest import BacktestRequest
 from api.services.backtest_service import (
     start_backtest, get_next_heartbeat, backtest_store, backtest_results
 )
-from api.db import get_run, save_result
+from api.db import get_run
 from api.deps import get_optional_current_user
 
 router = APIRouter()
