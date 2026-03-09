@@ -12,6 +12,7 @@ export interface StrategyCardData {
   winRate: string
   sharpe: string
   boxPeriod: number
+  engineType: 'Rule-Based' | 'Signal-Based' | 'Statistical'
   defaultParams: Record<string, unknown>
 }
 
@@ -50,11 +51,17 @@ export default function StrategyCard({ strategy, isSelected, onSelect }: Props) 
         </div>
 
         {/* Tags */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <span className="px-2 py-0.5 text-xs font-medium bg-[#1e293b] text-[#94a3b8] rounded-md">
             {strategy.category}
           </span>
-          <span className="px-2 py-0.5 text-xs font-medium bg-[#1e293b] text-[#94a3b8] rounded-md">
+          <span className={`px-2 py-0.5 text-xs font-medium rounded-md ${
+            strategy.difficulty === 'Beginner'
+              ? 'text-green-400 bg-green-400/10'
+              : strategy.difficulty === 'Intermediate'
+              ? 'text-yellow-400 bg-yellow-400/10'
+              : 'text-red-400 bg-red-400/10'
+          }`}>
             {strategy.difficulty}
           </span>
         </div>
@@ -62,13 +69,13 @@ export default function StrategyCard({ strategy, isSelected, onSelect }: Props) 
         {/* Description */}
         <p className="text-sm text-[#94a3b8] leading-relaxed">{strategy.description}</p>
 
-        {/* Metrics */}
+        {/* Metrics — box style */}
         <div className="grid grid-cols-2 gap-3 pt-2 border-t border-[#1f2937]">
-          <div>
+          <div className="bg-[#0f1117] rounded-lg p-2">
             <p className="text-xs text-[#64748b]">Win Rate</p>
             <p className="text-sm font-mono font-semibold text-white">{strategy.winRate}</p>
           </div>
-          <div>
+          <div className="bg-[#0f1117] rounded-lg p-2">
             <p className="text-xs text-[#64748b]">Sharpe Ratio</p>
             <p className="text-sm font-mono font-semibold text-white">{strategy.sharpe}</p>
           </div>
@@ -76,7 +83,7 @@ export default function StrategyCard({ strategy, isSelected, onSelect }: Props) 
 
         {/* Engine Footer */}
         <p className="text-xs text-[#64748b] pt-2 border-t border-[#1f2937]">
-          ⚙ Darvas Box Engine · {strategy.boxPeriod}d breakout
+          ⚙ Engine: {strategy.engineType}
         </p>
       </div>
     </div>
