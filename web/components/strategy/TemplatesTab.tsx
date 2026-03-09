@@ -14,6 +14,7 @@ const STRATEGIES: StrategyCardData[] = [
     winRate: '45–55%',
     sharpe: '0.5–1.2',
     boxPeriod: 55,
+    engineType: 'Rule-Based' as const,
     defaultParams: {
       darvas_box_period: 55,
       volume_multiplier: 2.0,
@@ -37,6 +38,7 @@ const STRATEGIES: StrategyCardData[] = [
     winRate: '40–50%',
     sharpe: '0.3–0.9',
     boxPeriod: 20,
+    engineType: 'Signal-Based' as const,
     defaultParams: {
       darvas_box_period: 20,
       volume_multiplier: 1.5,
@@ -60,6 +62,7 @@ const STRATEGIES: StrategyCardData[] = [
     winRate: '55–65%',
     sharpe: '0.6–1.4',
     boxPeriod: 30,
+    engineType: 'Statistical' as const,
     defaultParams: {
       darvas_box_period: 30,
       volume_multiplier: 1.2,

@@ -12,6 +12,7 @@ export interface StrategyCardData {
   winRate: string
   sharpe: string
   boxPeriod: number
+  engineType: 'Rule-Based' | 'Signal-Based' | 'Statistical'
   defaultParams: Record<string, unknown>
 }
 
@@ -68,13 +69,13 @@ export default function StrategyCard({ strategy, isSelected, onSelect }: Props) 
         {/* Description */}
         <p className="text-sm text-[#94a3b8] leading-relaxed">{strategy.description}</p>
 
-        {/* Metrics */}
+        {/* Metrics — box style */}
         <div className="grid grid-cols-2 gap-3 pt-2 border-t border-[#1f2937]">
-          <div>
+          <div className="bg-[#0f1117] rounded-lg p-2">
             <p className="text-xs text-[#64748b]">Win Rate</p>
             <p className="text-sm font-mono font-semibold text-white">{strategy.winRate}</p>
           </div>
-          <div>
+          <div className="bg-[#0f1117] rounded-lg p-2">
             <p className="text-xs text-[#64748b]">Sharpe Ratio</p>
             <p className="text-sm font-mono font-semibold text-white">{strategy.sharpe}</p>
           </div>
@@ -82,7 +83,7 @@ export default function StrategyCard({ strategy, isSelected, onSelect }: Props) 
 
         {/* Engine Footer */}
         <p className="text-xs text-[#64748b] pt-2 border-t border-[#1f2937]">
-          ⚙ Darvas Box Engine · {strategy.boxPeriod}d breakout
+          ⚙ Engine: {strategy.engineType}
         </p>
       </div>
     </div>
