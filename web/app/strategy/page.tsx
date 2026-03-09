@@ -6,6 +6,7 @@ import { BarChart2, History, Layers, Settings2, BarChart } from 'lucide-react'
 import TemplatesTab from '@/components/strategy/TemplatesTab'
 import RuleBuilderTab from '@/components/strategy/RuleBuilderTab'
 import IndicatorsTab from '@/components/strategy/IndicatorsTab'
+import StickyBottomBar from '@/components/strategy/StickyBottomBar'
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000/api'
 
@@ -24,6 +25,8 @@ const defaultConfig = {
   darvas_breakout_pct: 0.02,
   darvas_stop_loss_pct: 0.07,
   darvas_trailing_stop: true,
+  volume_multiplier: 2.0,
+  trailing_stop_r: 4.5,
   strategy_name: 'darvas_box',
 }
 
@@ -78,6 +81,7 @@ export default function StrategyPage() {
     try {
       const res = await fetch(`${API}/backtest`, {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(config),
       })
@@ -89,6 +93,12 @@ export default function StrategyPage() {
       setLoading(false)
     }
   }
+
+  const strategyDisplayName =
+    selectedTemplate === 'darvas_box' ? 'Darvas Box'
+    : selectedTemplate === 'momentum' ? 'Momentum'
+    : selectedTemplate === 'mean_reversion' ? 'Mean Reversion'
+    : 'Custom'
 
   return (
     <div className="min-h-screen bg-[#0f1117] text-[#f3f4f6]">
@@ -106,7 +116,7 @@ export default function StrategyPage() {
         </div>
       </nav>
 
-      <div className="max-w-2xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-6 py-8">
         <h1 className="text-xl font-bold mb-1">Strategy Builder</h1>
         <p className="text-sm text-[#9ca3af] mb-6">Build your trading strategy from templates, rules, or indicators</p>
 
@@ -134,9 +144,14 @@ export default function StrategyPage() {
         </div>
 
         {/* Tab Content */}
-        <div className="bg-[#111827] border border-[#1f2937] rounded-xl p-5 mb-5">
+        <div className={`${activeTab === 'templates' ? '' : 'bg-[#111827] border border-[#1f2937] rounded-xl p-5'} mb-5`}>
           {activeTab === 'templates' && (
-            <TemplatesTab selectedTemplate={selectedTemplate} onSelect={handleTemplateSelect} />
+            <TemplatesTab
+              selectedTemplate={selectedTemplate}
+              onSelect={handleTemplateSelect}
+              params={config}
+              onParamChange={update}
+            />
           )}
           {activeTab === 'rules' && (
             <RuleBuilderTab params={config} onChange={update} />
@@ -146,87 +161,133 @@ export default function StrategyPage() {
           )}
         </div>
 
-        {/* Common Params */}
-        <div className="bg-[#111827] border border-[#1f2937] rounded-xl p-5 space-y-5 mb-5">
-          <h3 className="text-sm font-semibold text-[#9ca3af] uppercase tracking-wider">Backtest Parameters</h3>
+        {/* Common Backtest Params (shown for rules/indicators tabs) */}
+        {activeTab !== 'templates' && (
+          <div className="bg-[#111827] border border-[#1f2937] rounded-xl p-5 space-y-5 mb-5">
+            <h3 className="text-sm font-semibold text-[#9ca3af] uppercase tracking-wider">Backtest Parameters</h3>
 
-          {/* Universe */}
-          <div>
-            <label className="text-[#9ca3af] text-sm block mb-1.5">Universe</label>
-            <select
-              value={config.universe as string}
-              onChange={e => update('universe', e.target.value)}
-              className="w-full bg-[#1f2937] border border-[#374151] rounded-lg px-3 py-2.5 text-[#f3f4f6] focus:outline-none focus:ring-1 focus:ring-[#26a69a]"
-            >
-              <option value="sp500">S&P 500 (503 stocks)</option>
-              <option value="sp500_400">S&P 500 + S&P 400</option>
-            </select>
-          </div>
+            {/* Universe */}
+            <div>
+              <label className="text-[#9ca3af] text-sm block mb-1.5">Universe</label>
+              <select
+                value={config.universe as string}
+                onChange={e => update('universe', e.target.value)}
+                className="w-full bg-[#1f2937] border border-[#374151] rounded-lg px-3 py-2.5 text-[#f3f4f6] focus:outline-none focus:ring-1 focus:ring-[#26a69a]"
+              >
+                <option value="sp500">S&P 500 (503 stocks)</option>
+                <option value="sp500_400">S&P 500 + S&P 400</option>
+              </select>
+            </div>
 
-          {/* Dates */}
-          <div className="grid grid-cols-2 gap-4">
-            {([['Start Date', 'start_date'], ['End Date', 'end_date']] as [string, string][]).map(([label, key]) => (
-              <div key={key}>
-                <label className="text-[#9ca3af] text-sm block mb-1.5">{label}</label>
+            {/* Dates */}
+            <div className="grid grid-cols-2 gap-4">
+              {([['Start Date', 'start_date'], ['End Date', 'end_date']] as [string, string][]).map(([label, key]) => (
+                <div key={key}>
+                  <label className="text-[#9ca3af] text-sm block mb-1.5">{label}</label>
+                  <input
+                    type="date"
+                    value={config[key] as string}
+                    onChange={e => update(key, e.target.value)}
+                    className="w-full bg-[#1f2937] border border-[#374151] rounded-lg px-3 py-2.5 text-[#f3f4f6] focus:outline-none focus:ring-1 focus:ring-[#26a69a]"
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Capital */}
+            <div>
+              <label className="text-[#9ca3af] text-sm block mb-1.5">Initial Capital</label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9ca3af]">$</span>
                 <input
-                  type="date"
-                  value={config[key] as string}
-                  onChange={e => update(key, e.target.value)}
-                  className="w-full bg-[#1f2937] border border-[#374151] rounded-lg px-3 py-2.5 text-[#f3f4f6] focus:outline-none focus:ring-1 focus:ring-[#26a69a]"
+                  type="number"
+                  value={config.initial_capital as number}
+                  min={10000} max={10000000} step={10000}
+                  onChange={e => update('initial_capital', Number(e.target.value))}
+                  className="w-full bg-[#1f2937] border border-[#374151] rounded-lg pl-7 pr-3 py-2.5 text-[#f3f4f6] font-mono focus:outline-none focus:ring-1 focus:ring-[#26a69a]"
                 />
               </div>
-            ))}
-          </div>
+            </div>
 
-          {/* Capital */}
-          <div>
-            <label className="text-[#9ca3af] text-sm block mb-1.5">Initial Capital</label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9ca3af]">$</span>
-              <input
-                type="number"
-                value={config.initial_capital as number}
-                min={10000} max={10000000} step={10000}
-                onChange={e => update('initial_capital', Number(e.target.value))}
-                className="w-full bg-[#1f2937] border border-[#374151] rounded-lg pl-7 pr-3 py-2.5 text-[#f3f4f6] font-mono focus:outline-none focus:ring-1 focus:ring-[#26a69a]"
-              />
+            <SliderField
+              label="Position Size per Trade"
+              value={config.position_size_pct as number}
+              min={0.05} max={0.5} step={0.05}
+              format={v => `${(v * 100).toFixed(0)}%`}
+              onChange={v => update('position_size_pct', v)}
+            />
+            <SliderField
+              label="Max Positions"
+              value={config.max_positions as number}
+              min={1} max={20} step={1}
+              onChange={v => update('max_positions', v)}
+            />
+          </div>
+        )}
+
+        {/* Backtest params for templates tab (compact, below params panel) */}
+        {activeTab === 'templates' && (
+          <div className="bg-[#111827] border border-[#1f2937] rounded-xl p-5 mt-6 space-y-5 mb-5">
+            <h3 className="text-sm font-semibold text-[#9ca3af] uppercase tracking-wider">Backtest Settings</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="text-[#9ca3af] text-sm block mb-1.5">Universe</label>
+                <select
+                  value={config.universe as string}
+                  onChange={e => update('universe', e.target.value)}
+                  className="w-full bg-[#1f2937] border border-[#374151] rounded-lg px-3 py-2.5 text-[#f3f4f6] focus:outline-none focus:ring-1 focus:ring-[#26a69a]"
+                >
+                  <option value="sp500">S&P 500 (503 stocks)</option>
+                  <option value="sp500_400">S&P 500 + S&P 400</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-[#9ca3af] text-sm block mb-1.5">Initial Capital</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9ca3af]">$</span>
+                  <input
+                    type="number"
+                    value={config.initial_capital as number}
+                    min={10000} max={10000000} step={10000}
+                    onChange={e => update('initial_capital', Number(e.target.value))}
+                    className="w-full bg-[#1f2937] border border-[#374151] rounded-lg pl-7 pr-3 py-2.5 text-[#f3f4f6] font-mono focus:outline-none focus:ring-1 focus:ring-[#26a69a]"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              {([['Start Date', 'start_date'], ['End Date', 'end_date']] as [string, string][]).map(([label, key]) => (
+                <div key={key}>
+                  <label className="text-[#9ca3af] text-sm block mb-1.5">{label}</label>
+                  <input
+                    type="date"
+                    value={config[key] as string}
+                    onChange={e => update(key, e.target.value)}
+                    className="w-full bg-[#1f2937] border border-[#374151] rounded-lg px-3 py-2.5 text-[#f3f4f6] focus:outline-none focus:ring-1 focus:ring-[#26a69a]"
+                  />
+                </div>
+              ))}
             </div>
           </div>
-
-          <SliderField
-            label="Position Size per Trade"
-            value={config.position_size_pct as number}
-            min={0.05} max={0.5} step={0.05}
-            format={v => `${(v * 100).toFixed(0)}%`}
-            onChange={v => update('position_size_pct', v)}
-          />
-          <SliderField
-            label="Max Positions"
-            value={config.max_positions as number}
-            min={1} max={20} step={1}
-            onChange={v => update('max_positions', v)}
-          />
-        </div>
+        )}
 
         {error && (
           <div className="bg-[#ef535020] border border-[#ef5350] rounded-lg px-4 py-3 text-[#ef5350] text-sm mb-4">
             {error}
           </div>
         )}
-
-        <button
-          onClick={handleRun}
-          disabled={loading}
-          className="w-full py-3.5 bg-[#26a69a] hover:bg-[#2bbbad] disabled:bg-[#374151] disabled:cursor-not-allowed rounded-xl font-semibold text-sm transition-colors flex items-center justify-center gap-2"
-        >
-          {loading ? (
-            <>
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-              Starting Backtest...
-            </>
-          ) : '▶ Run Backtest'}
-        </button>
       </div>
+
+      {/* Sticky Bottom Bar */}
+      <StickyBottomBar
+        strategyName={strategyDisplayName}
+        universe={config.universe as string}
+        startDate={config.start_date as string}
+        endDate={config.end_date as string}
+        initialCapital={config.initial_capital as number}
+        loading={loading}
+        onRun={handleRun}
+      />
     </div>
   )
 }
