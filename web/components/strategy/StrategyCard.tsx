@@ -50,11 +50,17 @@ export default function StrategyCard({ strategy, isSelected, onSelect }: Props) 
         </div>
 
         {/* Tags */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <span className="px-2 py-0.5 text-xs font-medium bg-[#1e293b] text-[#94a3b8] rounded-md">
             {strategy.category}
           </span>
-          <span className="px-2 py-0.5 text-xs font-medium bg-[#1e293b] text-[#94a3b8] rounded-md">
+          <span className={`px-2 py-0.5 text-xs font-medium rounded-md ${
+            strategy.difficulty === 'Beginner'
+              ? 'bg-[#166534] text-[#86efac]'
+              : strategy.difficulty === 'Intermediate'
+              ? 'bg-[#92400e] text-[#fcd34d]'
+              : 'bg-[#7f1d1d] text-[#fca5a5]'
+          }`}>
             {strategy.difficulty}
           </span>
         </div>
