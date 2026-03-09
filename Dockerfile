@@ -20,5 +20,5 @@ RUN mkdir -p ./data/cache
 
 EXPOSE 8000
 
-CMD uvicorn api.main:app --host 0.0.0.0 --port ${PORT:-8000}
-# cache-bust: 1773007804
+CMD ["/bin/sh", "-c", "uvicorn api.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+# cache-bust: 1773012001
