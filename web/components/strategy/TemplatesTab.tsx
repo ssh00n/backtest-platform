@@ -1,125 +1,112 @@
 'use client'
 
-import { Zap, TrendingDown, TrendingUp, CheckCircle2, Activity } from 'lucide-react'
+import StrategyCard, { StrategyCardData } from './StrategyCard'
+import StrategyParamsPanel from './StrategyParamsPanel'
 
-const TEMPLATES = [
+const STRATEGIES: StrategyCardData[] = [
   {
     id: 'darvas_box',
     name: 'Darvas Box',
     category: 'Breakout',
     difficulty: 'Intermediate',
-    difficultyColor: '#f59e0b',
-    icon: TrendingUp,
+    icon: 'TrendingUp',
     description: 'Identify stocks making new highs forming box-shaped consolidation patterns, then buy on breakout.',
-    engineNote: '55d breakout · Trend-following',
-    tags: ['Trend Following', 'Momentum'],
+    winRate: '45–55%',
+    sharpe: '0.5–1.2',
+    boxPeriod: 55,
     defaultParams: {
       darvas_box_period: 55,
+      volume_multiplier: 2.0,
+      trailing_stop_r: 4.5,
       darvas_breakout_pct: 0.02,
       darvas_stop_loss_pct: 0.07,
       darvas_trailing_stop: true,
+      use_events: false,
       max_positions: 5,
       position_size_pct: 0.2,
+      strategy_name: 'darvas_box',
     },
-    winRateHint: '45–55%',
-    sharpHint: '0.5–1.2',
   },
   {
     id: 'momentum',
     name: 'Momentum',
     category: 'Trend',
     difficulty: 'Beginner',
-    difficultyColor: '#26a69a',
-    icon: Zap,
+    icon: 'Zap',
     description: 'Buy stocks with strong recent price momentum. Simple and effective in trending markets.',
-    engineNote: '20d breakout · Short-term',
-    tags: ['Momentum', 'Easy'],
+    winRate: '40–50%',
+    sharpe: '0.3–0.9',
+    boxPeriod: 20,
     defaultParams: {
       darvas_box_period: 20,
+      volume_multiplier: 1.5,
+      trailing_stop_r: 3.0,
       darvas_breakout_pct: 0.01,
       darvas_stop_loss_pct: 0.05,
       darvas_trailing_stop: true,
+      use_events: false,
       max_positions: 8,
       position_size_pct: 0.15,
+      strategy_name: 'momentum',
     },
-    winRateHint: '40–50%',
-    sharpHint: '0.3–0.9',
   },
   {
     id: 'mean_reversion',
     name: 'Mean Reversion',
     category: 'Contrarian',
     difficulty: 'Advanced',
-    difficultyColor: '#ef5350',
-    icon: Activity,
+    icon: 'Activity',
     description: 'Trade pullbacks to mean. Enter when price is oversold relative to recent average.',
-    engineNote: '30d box · Conservative exit',
-    tags: ['Contrarian', 'Range'],
+    winRate: '55–65%',
+    sharpe: '0.6–1.4',
+    boxPeriod: 30,
     defaultParams: {
       darvas_box_period: 30,
+      volume_multiplier: 1.2,
+      trailing_stop_r: 2.5,
       darvas_breakout_pct: 0.03,
       darvas_stop_loss_pct: 0.1,
       darvas_trailing_stop: false,
+      use_events: true,
       max_positions: 4,
       position_size_pct: 0.25,
+      strategy_name: 'mean_reversion',
     },
-    winRateHint: '55–65%',
-    sharpHint: '0.6–1.4',
   },
 ]
 
 interface Props {
   selectedTemplate: string | null
   onSelect: (templateId: string, params: Record<string, unknown>) => void
+  params: Record<string, unknown>
+  onParamChange: (key: string, value: unknown) => void
 }
 
-export default function TemplatesTab({ selectedTemplate, onSelect }: Props) {
+export default function TemplatesTab({ selectedTemplate, onSelect, params, onParamChange }: Props) {
   return (
-    <div className="space-y-4">
-      <p className="text-sm text-[#9ca3af]">Choose a pre-built strategy template to get started quickly.</p>
-      <div className="grid gap-3">
-        {TEMPLATES.map(t => {
-          const Icon = t.icon
-          const isSelected = selectedTemplate === t.id
-          return (
-            <button
-              key={t.id}
-              onClick={() => onSelect(t.id, t.defaultParams)}
-              className={`text-left w-full rounded-xl border p-4 transition-all ${
-                isSelected
-                  ? 'border-[#26a69a] bg-[#26a69a10]'
-                  : 'border-[#1f2937] bg-[#0f1117] hover:border-[#374151]'
-              }`}
-            >
-              <div className="flex items-start gap-4">
-                <div className={`p-2 rounded-lg ${isSelected ? 'bg-[#26a69a20]' : 'bg-[#1f2937]'}`}>
-                  <Icon size={20} className={isSelected ? 'text-[#26a69a]' : 'text-[#9ca3af]'} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-semibold">{t.name}</span>
-                    <span className="text-xs px-2 py-0.5 rounded-full border text-[#9ca3af] border-[#374151]">
-                      {t.category}
-                    </span>
-                    <span className="text-xs font-medium" style={{ color: t.difficultyColor }}>
-                      ● {t.difficulty}
-                    </span>
-                    {isSelected && <CheckCircle2 size={14} className="text-[#26a69a] ml-auto" />}
-                  </div>
-                  <p className="text-sm text-[#9ca3af] mt-1">{t.description}</p>
-                  <div className="flex gap-4 mt-2 text-xs text-[#6b7280]">
-                    <span>Win Rate: <span className="text-[#9ca3af]">{t.winRateHint}</span></span>
-                    <span>Sharpe: <span className="text-[#9ca3af]">{t.sharpHint}</span></span>
-                  </div>
-                  <div className="mt-3 pt-2.5 border-t border-[#1f2937] text-[10px] text-[#4b5563]">
-                    ⚙️ Darvas Box Engine · {(t.defaultParams as {darvas_box_period: number}).darvas_box_period}d breakout
-                  </div>
-                </div>
-              </div>
-            </button>
-          )
-        })}
+    <div>
+      <p className="text-sm text-[#94a3b8] mb-4">
+        Choose a pre-built strategy template to get started quickly.
+      </p>
+
+      {/* 3-Column Card Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {STRATEGIES.map(s => (
+          <StrategyCard
+            key={s.id}
+            strategy={s}
+            isSelected={selectedTemplate === s.id}
+            onSelect={onSelect}
+          />
+        ))}
       </div>
+
+      {/* Parameters Panel — expands on card selection */}
+      <StrategyParamsPanel
+        params={params}
+        onChange={onParamChange}
+        isVisible={!!selectedTemplate}
+      />
     </div>
   )
 }
