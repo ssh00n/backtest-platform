@@ -83,12 +83,30 @@ def init_db():
                     CREATE INDEX IF NOT EXISTS ix_backtest_runs_user_id
                     ON backtest_runs(user_id)
                 """)
+                # strategy_configs 테이블 (HOO-8)
+                cur.execute("""
+                    CREATE TABLE IF NOT EXISTS strategy_configs (
+                        id          TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+                        user_id     TEXT REFERENCES users(id),
+                        name        VARCHAR(255) NOT NULL,
+                        strategy    VARCHAR(100) NOT NULL,
+                        config      JSONB NOT NULL DEFAULT '{}',
+                        is_public   BOOLEAN DEFAULT FALSE,
+                        view_count  INTEGER DEFAULT 0,
+                        created_at  TIMESTAMPTZ DEFAULT NOW(),
+                        updated_at  TIMESTAMPTZ DEFAULT NOW()
+                    )
+                """)
+                cur.execute("""
+                    CREATE INDEX IF NOT EXISTS ix_strategy_configs_user_id
+                    ON strategy_configs(user_id)
+                """)
         print("[DB] init_db OK")
     except Exception as e:
         print(f"[DB] init_db error: {e}")
 
 
-def save_result(backtest_id: str, request_params: dict, result: dict):
+def save_result(backtest_id: str, request_params: dict, result: dict, user_id: str | None = None):
     """백테스트 결과 저장"""
     if not DATABASE_URL:
         return
@@ -100,8 +118,8 @@ def save_result(backtest_id: str, request_params: dict, result: dict):
                     INSERT INTO backtest_runs
                         (id, start_date, end_date, initial_capital, max_positions,
                          position_size_pct, status, total_return_pct, total_trades,
-                         win_rate_pct, sharpe_ratio, max_drawdown_pct, equity_curve, trades, metrics, spy_equity_curve)
-                    VALUES (%s,%s,%s,%s,%s,%s,'completed',%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                         win_rate_pct, sharpe_ratio, max_drawdown_pct, equity_curve, trades, metrics, spy_equity_curve, user_id)
+                    VALUES (%s,%s,%s,%s,%s,%s,'completed',%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                     ON CONFLICT (id) DO UPDATE SET
                         status = 'completed',
                         total_return_pct = EXCLUDED.total_return_pct,
@@ -112,7 +130,8 @@ def save_result(backtest_id: str, request_params: dict, result: dict):
                         equity_curve = EXCLUDED.equity_curve,
                         trades = EXCLUDED.trades,
                         metrics = EXCLUDED.metrics,
-                        spy_equity_curve = EXCLUDED.spy_equity_curve
+                        spy_equity_curve = EXCLUDED.spy_equity_curve,
+                        user_id = EXCLUDED.user_id
                 """, (
                     backtest_id,
                     request_params.get("start_date"),
@@ -129,6 +148,7 @@ def save_result(backtest_id: str, request_params: dict, result: dict):
                     json.dumps(result.get("trades", [])),
                     json.dumps(result.get("metrics", {})),
                     json.dumps(result.get("spy_equity_curve", [])),
+                    user_id,
                 ))
         print(f"[DB] save_result OK: {backtest_id}")
     except Exception as e:
@@ -305,3 +325,28 @@ def delete_refresh_token(token: str) -> bool:
     except Exception as e:
         print(f"[DB] delete_refresh_token error: {e}")
         return False
+
+
+def list_runs_by_user(user_id: str, limit: int = 20) -> list[dict]:
+    """특정 유저의 백테스트 히스토리 조회"""
+    if not DATABASE_URL:
+        return []
+    try:
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT id, created_at, start_date, end_date, initial_capital,
+                           max_positions, position_size_pct, status,
+                           total_return_pct, total_trades, win_rate_pct,
+                           sharpe_ratio, max_drawdown_pct, user_id
+                    FROM backtest_runs
+                    WHERE user_id = %s
+                    ORDER BY created_at DESC
+                    LIMIT %s
+                """, (user_id, limit))
+                cols = [d.name for d in cur.description]
+                rows = cur.fetchall()
+        return [dict(zip(cols, row)) for row in rows]
+    except Exception as e:
+        print(f"[DB] list_runs_by_user error: {e}")
+        return []

@@ -15,7 +15,7 @@ backtest_results: Dict[str, Any] = {}
 HEARTBEAT_STEPS = [10, 20, 35, 50, 65, 80, 92]
 
 
-def _run_backtest_sync(backtest_id: str, request: BacktestRequest):
+def _run_backtest_sync(backtest_id: str, request: BacktestRequest, user_id: str | None = None):
     """Synchronous backtest runner - called in thread pool."""
     try:
         from datetime import datetime, timedelta
@@ -113,7 +113,7 @@ def _run_backtest_sync(backtest_id: str, request: BacktestRequest):
         # DB 저장 (비동기 안전하게 try/except)
         try:
             from api.db import save_result
-            save_result(backtest_id, request.__dict__, result_data)
+            save_result(backtest_id, request.__dict__, result_data, user_id=user_id)
         except Exception as db_err:
             print(f"[DB] save_result skipped: {db_err}")
 
@@ -122,17 +122,18 @@ def _run_backtest_sync(backtest_id: str, request: BacktestRequest):
         backtest_store[backtest_id]["error"] = str(e)
 
 
-async def start_backtest(request: BacktestRequest) -> str:
+async def start_backtest(request: BacktestRequest, user_id: str | None = None) -> str:
     backtest_id = str(uuid.uuid4())
     backtest_store[backtest_id] = {
         "status": "running",
         "progress_pct": 0,
         "step_index": 0,
         "started_at": datetime.utcnow().isoformat(),
+        "user_id": user_id,
     }
 
     loop = asyncio.get_event_loop()
-    loop.run_in_executor(executor, _run_backtest_sync, backtest_id, request)
+    loop.run_in_executor(executor, _run_backtest_sync, backtest_id, request, user_id)
 
     return backtest_id
 
