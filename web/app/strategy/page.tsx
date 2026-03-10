@@ -113,6 +113,7 @@ export default function StrategyPage() {
           <Link href="/history" className="hover:text-[#f3f4f6] transition-colors flex items-center gap-1">
             <History size={14} /> History
           </Link>
+          <Link href="/paper-trading" className="hover:text-[#f3f4f6] transition-colors">Paper Trading</Link>
         </div>
       </nav>
 
