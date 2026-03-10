@@ -9,9 +9,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  defs,
-  linearGradient,
-  stop,
 } from 'recharts';
 import { EquityCurvePoint } from '@/lib/paper-trading-api';
 
@@ -66,12 +63,7 @@ export function MiniEquityCurve({ data, loading }: Props) {
       ) : (
         <ResponsiveContainer width="100%" height={160}>
           <AreaChart data={filtered} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
-            <defs>
-              <linearGradient id="ptGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#26a69a" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#26a69a" stopOpacity={0} />
-              </linearGradient>
-            </defs>
+
             <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" vertical={false} />
             <XAxis
               dataKey="date"
@@ -91,10 +83,17 @@ export function MiniEquityCurve({ data, loading }: Props) {
               contentStyle={{ background: '#111827', border: '1px solid #1f2937', borderRadius: 8 }}
               labelStyle={{ color: '#9ca3af', fontSize: 11 }}
               itemStyle={{ color: '#26a69a', fontFamily: 'monospace' }}
-              formatter={(v: number) =>
-                new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v)
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              formatter={(v: any) =>
+                [new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(v)), 'Value']
               }
             />
+            <defs>
+              <linearGradient id="ptGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#26a69a" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#26a69a" stopOpacity={0} />
+              </linearGradient>
+            </defs>
             <Area
               type="monotone"
               dataKey="value"
