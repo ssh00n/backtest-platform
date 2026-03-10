@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backtest-platform-api-production-6ae3.up.railway.app';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
 export interface Portfolio {
   id: string;
@@ -62,7 +62,7 @@ export interface EquityCurvePoint {
 }
 
 async function fetchWithAuth(path: string, options: RequestInit = {}) {
-  const res = await fetch(`${BASE_URL}/api/paper-trading${path}`, {
+  const res = await fetch(`${BASE_URL}/paper-trading${path}`, {
     ...options,
     credentials: 'include',
     headers: {
@@ -101,7 +101,7 @@ export const paperTradingApi = {
 };
 
 export async function cancelOrder(orderId: string): Promise<void> {
-  const res = await fetch(`${BASE_URL}/api/paper-trading/orders/${orderId}`, {
+  const res = await fetch(`${BASE_URL}/paper-trading/orders/${orderId}`, {
     method: 'DELETE',
     credentials: 'include',
   });
