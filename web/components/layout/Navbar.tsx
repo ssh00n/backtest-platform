@@ -10,12 +10,8 @@ const NAV_LINKS = [
   { href: '/paper-trading', label: 'Paper Trading' },
 ];
 
-const HIDE_NAV_PATHS = ['/login', '/register'];
-
 export function Navbar() {
   const pathname = usePathname();
-
-  if (HIDE_NAV_PATHS.some((p) => pathname.startsWith(p))) return null;
 
   return (
     <nav className="border-b border-[#1f2937] px-6 py-4 flex items-center justify-between">
