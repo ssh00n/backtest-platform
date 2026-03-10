@@ -1,8 +1,7 @@
 'use client'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { BarChart2 } from 'lucide-react'
 import { KPICard } from '@/components/results/KPICard'
 import { EquityCurve } from '@/components/results/EquityCurve'
 import { TradeTable } from '@/components/results/TradeTable'
@@ -80,18 +79,6 @@ export default function ResultsPage() {
 
   return (
     <div className="min-h-screen bg-[#0f1117] text-[#f3f4f6]">
-      {/* Nav */}
-      <nav className="border-b border-[#1f2937] px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <BarChart2 className="text-[#26a69a]" size={22} />
-          <span className="font-semibold text-lg tracking-tight">WFS Backtest</span>
-        </div>
-        <div className="flex gap-6 text-sm text-[#9ca3af]">
-          <Link href="/strategy" className="hover:text-[#f3f4f6] transition-colors">Strategy</Link>
-          <Link href="/history" className="hover:text-[#f3f4f6] transition-colors">History</Link>
-          <span className="text-[#26a69a] font-medium">Results</span>
-        </div>
-      </nav>
 
       <main className="max-w-7xl mx-auto px-6 py-8">
         {/* Header */}

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { ArrowUpRight, ArrowDownRight, Clock, TrendingUp, BarChart2, History } from 'lucide-react'
+import { ArrowUpRight, ArrowDownRight, Clock, TrendingUp, History } from 'lucide-react'
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
 
@@ -39,17 +39,6 @@ export default function HistoryPage() {
 
   return (
     <div className="min-h-screen bg-[#0f1117] text-[#f3f4f6]">
-      {/* Nav */}
-      <nav className="border-b border-[#1f2937] px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <BarChart2 className="text-[#26a69a]" size={22} />
-          <span className="font-semibold text-lg tracking-tight">WFS Backtest</span>
-        </div>
-        <div className="flex gap-6 text-sm text-[#9ca3af]">
-          <Link href="/strategy" className="hover:text-[#f3f4f6] transition-colors">Strategy</Link>
-          <Link href="/history" className="text-[#26a69a] font-medium">History</Link>
-        </div>
-      </nav>
 
       <main className="max-w-6xl mx-auto px-6 py-8">
         <div className="flex items-center gap-3 mb-6">

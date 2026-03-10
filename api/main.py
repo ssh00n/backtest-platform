@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from api.routes import backtest, strategy, market, history
+from api.routes import backtest, strategy, market, history, paper_trading
 from api.routers import auth
 from api.db import init_db
 
@@ -23,6 +23,7 @@ app.include_router(strategy.router, prefix="/api/strategy", tags=["strategy"])
 app.include_router(market.router, prefix="/api/market", tags=["market"])
 app.include_router(history.router, prefix="/api/history", tags=["history"])
 app.include_router(auth.router, prefix="/api")
+app.include_router(paper_trading.router, prefix="/api/paper-trading", tags=["paper-trading"])
 
 
 @app.get("/api/health")
