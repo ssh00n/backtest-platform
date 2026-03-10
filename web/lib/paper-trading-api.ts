@@ -56,6 +56,12 @@ export interface OrderResult {
   cash_remaining: number;
 }
 
+// BE wraps response: { order: OrderResult, cash_remaining: number }
+export interface OrderResponse {
+  order: OrderResult;
+  cash_remaining: number;
+}
+
 export interface EquityCurvePoint {
   date: string;
   value: number;
@@ -90,11 +96,14 @@ export const paperTradingApi = {
   getEquityCurve: (): Promise<{ equity_curve: EquityCurvePoint[] }> =>
     fetchWithAuth('/equity-curve'),
 
-  submitOrder: (req: OrderRequest): Promise<OrderResult> =>
-    fetchWithAuth('/orders', {
+  submitOrder: async (req: OrderRequest): Promise<OrderResult> => {
+    const res: OrderResponse = await fetchWithAuth('/orders', {
       method: 'POST',
       body: JSON.stringify(req),
-    }),
+    });
+    // Flatten: merge order fields + cash_remaining
+    return { ...res.order, cash_remaining: res.cash_remaining };
+  },
 
   resetPortfolio: (): Promise<{ message: string }> =>
     fetchWithAuth('/reset', { method: 'POST' }),

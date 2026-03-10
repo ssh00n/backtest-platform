@@ -83,6 +83,7 @@ export default function PaperTradingPage() {
             submitting={submitting}
             prefilledSymbol={prefilledSymbol}
             buyingPower={portfolio?.buying_power ?? 0}
+            pendingOrders={orders}
           />
         </div>
 
