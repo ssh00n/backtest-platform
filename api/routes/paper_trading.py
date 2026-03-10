@@ -35,7 +35,7 @@ class OrderRequest(BaseModel):
 async def get_portfolio(current_user: dict = Depends(get_current_user)):
     """포트폴리오 개요 (balance, P&L, buying power)"""
     try:
-        return get_portfolio_overview(current_user["sub"])
+        return get_portfolio_overview(current_user["id"])
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -50,7 +50,7 @@ async def place_order(
     """주문 제출 (buy/sell)"""
     try:
         result = submit_order(
-            user_id=current_user["sub"],
+            user_id=current_user["id"],
             symbol=req.symbol,
             side=req.side,
             qty=req.qty,
@@ -76,7 +76,7 @@ async def place_order(
 async def get_positions(current_user: dict = Depends(get_current_user)):
     """보유 종목 목록 (현재 시세 포함)"""
     try:
-        return get_positions_with_prices(current_user["sub"])
+        return get_positions_with_prices(current_user["id"])
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -90,7 +90,7 @@ async def get_order_history(
 ):
     """최근 주문 기록"""
     try:
-        portfolio = get_or_create_portfolio(current_user["sub"])
+        portfolio = get_or_create_portfolio(current_user["id"])
         if not portfolio:
             return {"orders": []}
         orders = get_orders(portfolio["id"], limit=limit)
@@ -105,7 +105,7 @@ async def get_order_history(
 async def get_equity_curve_endpoint(current_user: dict = Depends(get_current_user)):
     """포트폴리오 가치 히스토리"""
     try:
-        portfolio = get_or_create_portfolio(current_user["sub"])
+        portfolio = get_or_create_portfolio(current_user["id"])
         if not portfolio:
             return {"equity_curve": []}
         curve = get_equity_curve(portfolio["id"])
@@ -120,7 +120,7 @@ async def get_equity_curve_endpoint(current_user: dict = Depends(get_current_use
 async def reset_portfolio_endpoint(current_user: dict = Depends(get_current_user)):
     """포트폴리오 초기화 ($100,000 리셋)"""
     try:
-        result = reset_paper_portfolio(current_user["sub"])
+        result = reset_paper_portfolio(current_user["id"])
         return {"message": "Portfolio reset successfully", "portfolio": result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

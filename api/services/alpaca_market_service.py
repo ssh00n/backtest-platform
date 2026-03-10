@@ -7,7 +7,7 @@ from alpaca.data import StockHistoricalDataClient
 from alpaca.data.requests import StockLatestQuoteRequest, StockLatestTradeRequest
 
 ALPACA_API_KEY = os.getenv("ALPACA_API_KEY", "")
-ALPACA_SECRET_KEY = os.getenv("ALPACA_SECRET_KEY", "")
+ALPACA_SECRET_KEY = os.getenv("ALPACA_API_SECRET", "")
 
 
 def _get_client() -> StockHistoricalDataClient:
