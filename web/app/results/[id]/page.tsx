@@ -1,7 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { Navbar } from '@/components/common/Navbar'
 import { KPICard } from '@/components/results/KPICard'
 import { EquityCurve } from '@/components/results/EquityCurve'
 import { TradeTable } from '@/components/results/TradeTable'
@@ -79,7 +78,6 @@ export default function ResultsPage() {
 
   return (
     <div className="min-h-screen bg-[#0f1117] text-[#f3f4f6]">
-      <Navbar />
 
       <main className="max-w-7xl mx-auto px-6 py-8">
         {/* Header */}

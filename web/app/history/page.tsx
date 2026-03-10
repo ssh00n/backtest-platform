@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import { ArrowUpRight, ArrowDownRight, Clock, TrendingUp, History } from 'lucide-react'
-import { Navbar } from '@/components/common/Navbar'
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
 
@@ -39,7 +38,6 @@ export default function HistoryPage() {
 
   return (
     <div className="min-h-screen bg-[#0f1117] text-[#f3f4f6]">
-      <Navbar />
 
       <main className="max-w-6xl mx-auto px-6 py-8">
         <div className="flex items-center gap-3 mb-6">

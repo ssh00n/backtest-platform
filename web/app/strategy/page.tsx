@@ -2,7 +2,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Layers, Settings2, BarChart } from 'lucide-react'
-import { Navbar } from '@/components/common/Navbar'
 import TemplatesTab from '@/components/strategy/TemplatesTab'
 import RuleBuilderTab from '@/components/strategy/RuleBuilderTab'
 import IndicatorsTab from '@/components/strategy/IndicatorsTab'
@@ -102,7 +101,6 @@ export default function StrategyPage() {
 
   return (
     <div className="min-h-screen bg-[#0f1117] text-[#f3f4f6]">
-      <Navbar />
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         <h1 className="text-xl font-bold mb-1">Strategy Builder</h1>

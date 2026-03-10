@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Navbar } from '@/components/common/Navbar';
 import { usePaperTrading } from '@/hooks/usePaperTrading';
 import { PortfolioOverview } from '@/components/paper-trading/PortfolioOverview';
 import { OrderEntry } from '@/components/paper-trading/OrderEntry';
@@ -38,7 +37,6 @@ export default function PaperTradingPage() {
 
   return (
     <div className="min-h-screen bg-[#0f1117] text-white">
-      <Navbar />
 
       <div className="max-w-[1400px] mx-auto px-4 py-6 space-y-6">
 
