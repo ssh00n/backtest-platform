@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
-import { BarChart2, History } from 'lucide-react';
+import { Navbar } from '@/components/common/Navbar';
 import { usePaperTrading } from '@/hooks/usePaperTrading';
 import { PortfolioOverview } from '@/components/paper-trading/PortfolioOverview';
 import { OrderEntry } from '@/components/paper-trading/OrderEntry';
@@ -39,20 +38,7 @@ export default function PaperTradingPage() {
 
   return (
     <div className="min-h-screen bg-[#0f1117] text-white">
-      {/* Nav */}
-      <nav className="border-b border-[#1f2937] px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <BarChart2 className="text-[#26a69a]" size={22} />
-          <span className="font-semibold text-lg tracking-tight">WFS Backtest</span>
-        </div>
-        <div className="flex gap-6 text-sm text-[#9ca3af]">
-          <Link href="/strategy" className="hover:text-white transition-colors">Strategy</Link>
-          <Link href="/history" className="hover:text-white transition-colors flex items-center gap-1">
-            <History size={14} /> History
-          </Link>
-          <Link href="/paper-trading" className="text-[#26a69a] font-medium">Paper Trading</Link>
-        </div>
-      </nav>
+      <Navbar />
 
       <div className="max-w-[1400px] mx-auto px-4 py-6 space-y-6">
 

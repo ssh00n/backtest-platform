@@ -1,8 +1,8 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { BarChart2, History, Layers, Settings2, BarChart } from 'lucide-react'
+import { Layers, Settings2, BarChart } from 'lucide-react'
+import { Navbar } from '@/components/common/Navbar'
 import TemplatesTab from '@/components/strategy/TemplatesTab'
 import RuleBuilderTab from '@/components/strategy/RuleBuilderTab'
 import IndicatorsTab from '@/components/strategy/IndicatorsTab'
@@ -102,20 +102,7 @@ export default function StrategyPage() {
 
   return (
     <div className="min-h-screen bg-[#0f1117] text-[#f3f4f6]">
-      {/* Nav */}
-      <nav className="border-b border-[#1f2937] px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <BarChart2 className="text-[#26a69a]" size={22} />
-          <span className="font-semibold text-lg tracking-tight">WFS Backtest</span>
-        </div>
-        <div className="flex gap-6 text-sm text-[#9ca3af]">
-          <Link href="/strategy" className="text-[#26a69a] font-medium">Strategy</Link>
-          <Link href="/history" className="hover:text-[#f3f4f6] transition-colors flex items-center gap-1">
-            <History size={14} /> History
-          </Link>
-          <Link href="/paper-trading" className="hover:text-[#f3f4f6] transition-colors">Paper Trading</Link>
-        </div>
-      </nav>
+      <Navbar />
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         <h1 className="text-xl font-bold mb-1">Strategy Builder</h1>
