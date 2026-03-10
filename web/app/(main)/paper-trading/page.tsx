@@ -87,7 +87,7 @@ export default function PaperTradingPage() {
         </div>
 
         {/* Recent Orders */}
-        <RecentOrders orders={orders} loading={loading} />
+        <RecentOrders orders={orders} loading={loading} onOrderCancelled={syncNow} />
       </div>
 
       {/* Reset Confirm Modal */}

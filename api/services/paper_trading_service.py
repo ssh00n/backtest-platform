@@ -190,3 +190,11 @@ def reset_paper_portfolio(user_id: str) -> dict:
     if not result:
         raise RuntimeError("Failed to reset portfolio")
     return result
+
+
+def cancel_paper_order(user_id: str, order_id: str) -> dict:
+    """pending 상태 주문 취소"""
+    result = db.cancel_order(user_id, order_id)
+    if not result:
+        raise ValueError("Order not found or not cancellable (only pending orders can be cancelled)")
+    return result

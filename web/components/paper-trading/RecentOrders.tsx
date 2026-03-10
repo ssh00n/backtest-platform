@@ -1,16 +1,18 @@
 'use client';
 
 import { Order } from '@/lib/paper-trading-api';
+import { cancelOrder } from '@/lib/paper-trading-api';
 
 interface Props {
   orders: Order[];
   loading: boolean;
+  onOrderCancelled?: () => void;
 }
 
 const statusConfig = {
   filled: { label: '✅ Filled', className: 'bg-[#26a69a]/10 text-[#26a69a]' },
   pending: { label: '⏳ Pending', className: 'bg-[#f59e0b]/10 text-[#f59e0b]' },
-  cancelled: { label: '❌ Cancelled', className: 'bg-[#ef5350]/10 text-[#ef5350]' },
+  cancelled: { label: '❌ Cancelled', className: 'bg-[#6b7280]/10 text-[#6b7280]' },
   rejected: { label: '⛔ Rejected', className: 'bg-[#ef5350]/10 text-[#ef5350]' },
 };
 
@@ -26,9 +28,18 @@ function formatTime(iso: string) {
   }
 }
 
-export function RecentOrders({ orders, loading }: Props) {
+export function RecentOrders({ orders, loading, onOrderCancelled }: Props) {
   if (loading) {
     return <div className="bg-[#111827] rounded-xl p-6 animate-pulse h-40" />;
+  }
+
+  async function handleCancel(orderId: string) {
+    try {
+      await cancelOrder(orderId);
+      onOrderCancelled?.();
+    } catch (e) {
+      console.error('Cancel failed:', e);
+    }
   }
 
   return (
@@ -49,12 +60,13 @@ export function RecentOrders({ orders, loading }: Props) {
                 <th className="px-4 py-3 text-right">Qty</th>
                 <th className="px-4 py-3 text-right">Price</th>
                 <th className="px-4 py-3 text-left">Status</th>
+                <th className="px-4 py-3 text-center">Action</th>
               </tr>
             </thead>
             <tbody>
               {orders.map((order) => {
                 const sideColor = order.side === 'buy' ? 'text-[#26a69a]' : 'text-[#ef5350]';
-                const statusCfg = statusConfig[order.status] ?? statusConfig.pending;
+                const statusCfg = statusConfig[order.status as keyof typeof statusConfig] ?? statusConfig.pending;
                 return (
                   <tr key={order.id} className="border-b border-[#1f2937] hover:bg-[#1f2937] transition-colors">
                     <td className="px-4 py-3 text-gray-400 font-mono">{formatTime(order.created_at)}</td>
@@ -68,6 +80,16 @@ export function RecentOrders({ orders, loading }: Props) {
                       <span className={`text-xs px-2 py-1 rounded-full font-medium ${statusCfg.className}`}>
                         {statusCfg.label}
                       </span>
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      {order.status === 'pending' && (
+                        <button
+                          onClick={() => handleCancel(order.id)}
+                          className="text-xs px-2 py-1 rounded bg-[#ef5350]/10 text-[#ef5350] hover:bg-[#ef5350]/20 transition-colors font-medium"
+                        >
+                          Cancel
+                        </button>
+                      )}
                     </td>
                   </tr>
                 );

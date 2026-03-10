@@ -9,6 +9,7 @@ from typing import Optional
 from api.deps import get_current_user
 from api.db import get_orders, get_equity_curve, get_or_create_portfolio
 from api.services.paper_trading_service import (
+    cancel_paper_order,
     get_portfolio_overview,
     get_positions_with_prices,
     submit_order,
@@ -122,5 +123,20 @@ async def reset_portfolio_endpoint(current_user: dict = Depends(get_current_user
     try:
         result = reset_paper_portfolio(current_user["id"])
         return {"message": "Portfolio reset successfully", "portfolio": result}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete("/orders/{order_id}")
+async def cancel_order_endpoint(
+    order_id: str,
+    current_user: dict = Depends(get_current_user),
+):
+    """pending 상태 주문 취소"""
+    try:
+        result = cancel_paper_order(current_user["id"], order_id)
+        return {"message": "Order cancelled", "order": result}
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
