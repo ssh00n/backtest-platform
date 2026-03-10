@@ -89,7 +89,6 @@ export default function PaperTradingPage() {
         {/* Recent Orders */}
         <RecentOrders orders={orders} loading={loading} />
       </div>
-      </div>
 
       {/* Reset Confirm Modal */}
       {showResetModal && (
