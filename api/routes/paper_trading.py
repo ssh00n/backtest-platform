@@ -58,7 +58,12 @@ async def place_order(
             order_type=req.order_type,
             limit_price=req.limit_price,
         )
-        return result
+        # 포트폴리오 잔고 업데이트 반영
+        portfolio = get_or_create_portfolio(current_user["id"])
+        return {
+            "order": result,
+            "cash_remaining": float(portfolio["cash_balance"]) if portfolio else None,
+        }
     except InsufficientFundsError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except InsufficientSharesError as e:
