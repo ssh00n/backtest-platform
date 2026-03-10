@@ -110,12 +110,5 @@ export const paperTradingApi = {
 };
 
 export async function cancelOrder(orderId: string): Promise<void> {
-  const res = await fetch(`${BASE_URL}/paper-trading/orders/${orderId}`, {
-    method: 'DELETE',
-    credentials: 'include',
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ detail: 'Cancel failed' }));
-    throw new Error(err.detail || 'Cancel failed');
-  }
+  await fetchWithAuth(`/orders/${orderId}`, { method: 'DELETE' });
 }
