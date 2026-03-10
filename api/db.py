@@ -670,3 +670,30 @@ def reset_portfolio(user_id: str) -> dict | None:
     except Exception as e:
         print(f"[DB] reset_portfolio error: {e}")
         return None
+
+
+def cancel_order(user_id: str, order_id: str) -> dict | None:
+    """pending 주문 취소 (user 소유 확인 포함)"""
+    if not DATABASE_URL:
+        return None
+    try:
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    UPDATE paper_orders o
+                    SET status = 'cancelled'
+                    FROM paper_portfolios p
+                    WHERE o.id = %s::uuid
+                      AND o.portfolio_id = p.id
+                      AND p.user_id = %s
+                      AND o.status = 'pending'
+                    RETURNING o.id::text, o.symbol, o.side, o.qty, o.status
+                """, (order_id, user_id))
+                row = cur.fetchone()
+                if not row:
+                    return None
+                cols = [d.name for d in cur.description]
+                return dict(zip(cols, row))
+    except Exception as e:
+        print(f"[DB] cancel_order error: {e}")
+        return None

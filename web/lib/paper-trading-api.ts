@@ -99,3 +99,14 @@ export const paperTradingApi = {
   resetPortfolio: (): Promise<{ message: string }> =>
     fetchWithAuth('/reset', { method: 'POST' }),
 };
+
+export async function cancelOrder(orderId: string): Promise<void> {
+  const res = await fetch(`${BASE_URL}/api/paper-trading/orders/${orderId}`, {
+    method: 'DELETE',
+    credentials: 'include',
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: 'Cancel failed' }));
+    throw new Error(err.detail || 'Cancel failed');
+  }
+}
