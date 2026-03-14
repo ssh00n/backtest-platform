@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { OrderRequest } from '@/lib/paper-trading-api';
+import { Order, OrderRequest } from '@/lib/paper-trading-api';
 
 interface Props {
   onSubmit: (req: OrderRequest) => Promise<string>;
   submitting: boolean;
   prefilledSymbol?: string;
   buyingPower: number;
+  pendingOrders?: Order[];
 }
 
 type Side = 'buy' | 'sell';
@@ -17,13 +18,35 @@ function fmt(n: number) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n);
 }
 
-export function OrderEntry({ onSubmit, submitting, prefilledSymbol, buyingPower }: Props) {
+function useMarketStatus() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    function check() {
+      const now = new Date();
+      const nyTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+      const day = nyTime.getDay(); // 0=Sun, 6=Sat
+      if (day === 0 || day === 6) { setIsOpen(false); return; }
+      const minutes = nyTime.getHours() * 60 + nyTime.getMinutes();
+      setIsOpen(minutes >= 9 * 60 + 30 && minutes < 16 * 60);
+    }
+    check();
+    const t = setInterval(check, 30_000);
+    return () => clearInterval(t);
+  }, []);
+
+  return isOpen;
+}
+
+export function OrderEntry({ onSubmit, submitting, prefilledSymbol, buyingPower, pendingOrders }: Props) {
   const [symbol, setSymbol] = useState(prefilledSymbol ?? '');
   const [side, setSide] = useState<Side>('buy');
   const [qty, setQty] = useState('');
   const [orderType, setOrderType] = useState<OrderType>('market');
   const [limitPrice, setLimitPrice] = useState('');
   const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
+  const marketOpen = useMarketStatus();
+  const hasPendingBuys = pendingOrders?.some(o => o.side === 'buy' && o.status === 'pending') ?? false;
 
   useEffect(() => {
     if (prefilledSymbol) setSymbol(prefilledSymbol);
@@ -57,7 +80,14 @@ export function OrderEntry({ onSubmit, submitting, prefilledSymbol, buyingPower 
 
   return (
     <div className="bg-[#111827] rounded-xl p-6 flex flex-col gap-4 xl:sticky xl:top-6">
-      <h3 className="text-white font-semibold">📋 Order Entry</h3>
+      <div className="flex items-center justify-between">
+        <h3 className="text-white font-semibold">📋 Order Entry</h3>
+        {marketOpen ? (
+          <span className="text-[#26a69a] text-xs">🟢 Market Open</span>
+        ) : (
+          <span className="text-[#ef5350] text-xs">🔴 Market Closed · Orders will fill at open</span>
+        )}
+      </div>
 
       {/* Toast */}
       {toast && (
@@ -160,7 +190,10 @@ export function OrderEntry({ onSubmit, submitting, prefilledSymbol, buyingPower 
 
         {/* Buying Power */}
         <div className="flex justify-between text-sm">
-          <span className="text-gray-400">Buying Power</span>
+          <span className="text-gray-400 flex items-center gap-1">
+            Buying Power
+            {hasPendingBuys && <span className="text-gray-500 text-xs">(잠정)</span>}
+          </span>
           <span className="text-white font-mono">{fmt(buyingPower)}</span>
         </div>
 
